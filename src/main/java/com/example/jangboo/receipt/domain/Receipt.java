@@ -21,32 +21,25 @@ public class Receipt {
     @Column(name = "dept_id")
     private Long deptId;
 
-    @Column(name = "appcode")
-    private String appcode;
-
-    @Column(name = "store")
-    private String store;
-
-    @Column(name = "ammount")
-    private int amount;
-
-    @Column(name = "transaction_date_time")
-    private LocalDateTime transactionDate;
-
     @Column(name = "img_url")
     private String receiptImgUrl;
+
+    @OneToOne(mappedBy = "receipt")
+    private ReceiptDetails receiptDetails;
 
     @OneToMany(mappedBy = "receipt", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReceiptItem> receiptItems = new ArrayList<>();
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private ReceiptStatus receiptStatus;
+
+
     @Builder
-    public Receipt(Long deptId, String appcode, String store, int amount, LocalDateTime transactionDate, String receiptImgUrl) {
+    public Receipt(Long deptId, String receiptImgUrl) {
         this.deptId = deptId;
-        this.appcode = appcode;
-        this.store = store;
-        this.amount = amount;
-        this.transactionDate = transactionDate;
-        this.receiptImgUrl = null;
+        this.receiptImgUrl = receiptImgUrl;
+        this.receiptStatus = ReceiptStatus.PEDING;
     }
 
     public void addReceiptItem(ReceiptItem item) {
@@ -54,6 +47,19 @@ public class Receipt {
         if (item.getReceipt() != this) {
             item.linkReceipt(this);
         }
+    }
+
+    public void updateReceiptDetails(String appcode, String store, int amount, LocalDateTime transactionDate){
+        this.receiptDetails = new ReceiptDetails(appcode, store, amount, transactionDate);
+        this.receiptStatus = ReceiptStatus.PROCESSED;
+    }
+
+    public void markAsProcessing() {
+        this.receiptStatus = ReceiptStatus.PROCESSING;
+    }
+
+    public void markAsFailed() {
+        this.receiptStatus = ReceiptStatus.FAILED;
     }
 
 }
