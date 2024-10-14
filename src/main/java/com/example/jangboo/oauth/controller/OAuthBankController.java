@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.jangboo.auth.controller.dto.Info.CurrentUserInfo;
 import com.example.jangboo.global.dto.ResultDto;
+import com.example.jangboo.oauth.controller.dto.response.AccountInfoResponse;
 import com.example.jangboo.oauth.service.OAuthBankService;
 
 @RestController
@@ -35,5 +36,12 @@ public class OAuthBankController {
 		@RequestParam("client_info") Long userId
 	) throws Exception {
 		return ResponseEntity.ok(ResultDto.of(200,"토큰 발급이 완료되었습니다.", oAuthBankService.getAccessToken(code,userId)));
+	}
+
+	@GetMapping("/account-list")
+	public ResponseEntity<ResultDto<AccountInfoResponse>> getAccountList(@AuthenticationPrincipal CurrentUserInfo userInfo) throws
+		Exception {
+		return ResponseEntity.ok(ResultDto.of(200,"유저의 계좌정보리스트가 조회되었습니다.",oAuthBankService.getAccountInfo(
+			userInfo.userId())));
 	}
 }

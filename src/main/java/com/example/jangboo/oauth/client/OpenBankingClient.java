@@ -4,12 +4,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import com.example.jangboo.oauth.controller.dto.response.AccountInfoResponse;
 import com.example.jangboo.oauth.controller.dto.response.OpenBankingTokenResponse;
 import com.example.jangboo.oauth.token.dto.TokenInfo;
 
@@ -89,5 +93,29 @@ public class OpenBankingClient {
 	public String getAuthUrl(Long userId) {
 		return "https://testapi.openbanking.or.kr/oauth/2.0/authorize?response_type=code&client_id="+
 			clientId+"&redirect_uri="+redirectUri+"&scope="+scope+"&client_info="+userId+"&state=12345678901234567890123456789012&auth_type=0";
+	}
+
+	public ResponseEntity<AccountInfoResponse> getAccountInfo(String userSeqNo, String accessToken) {
+		String accountInfoUrl = "https://testapi.openbanking.or.kr/v2.0/account/list";
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Authorization", "Bearer " + accessToken);  // Access Token 추가
+		headers.setContentType(MediaType.APPLICATION_JSON);
+
+		String urlTemplate = UriComponentsBuilder.fromHttpUrl(accountInfoUrl)
+			.queryParam("user_seq_no", userSeqNo)
+			.queryParam("include_cancel_yn", "N")
+			.queryParam("sort_order", "A")
+			.encode()
+			.toUriString();
+
+		HttpEntity<?> entity = new HttpEntity<>(headers);
+
+		return restTemplate.exchange(
+			urlTemplate,
+			HttpMethod.GET,
+			entity,
+			AccountInfoResponse.class
+		);
 	}
 }
