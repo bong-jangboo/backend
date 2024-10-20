@@ -1,8 +1,8 @@
-package com.example.jangboo.oauth.controller.dto.response;
+package com.example.jangboo.oauth.client.response;
 
 import java.util.List;
 
-import com.example.jangboo.oauth.controller.dto.Info.AccountInfo;
+import com.example.jangboo.oauth.client.response.info.AccountInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class AccountInfoResponse {

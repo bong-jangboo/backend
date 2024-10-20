@@ -1,4 +1,4 @@
-package com.example.jangboo.oauth.controller.dto.response;
+package com.example.jangboo.oauth.client.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

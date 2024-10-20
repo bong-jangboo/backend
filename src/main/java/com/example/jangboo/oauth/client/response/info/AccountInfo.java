@@ -1,4 +1,4 @@
-package com.example.jangboo.oauth.controller.dto.Info;
+package com.example.jangboo.oauth.client.response.info;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
