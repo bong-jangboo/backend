@@ -1,5 +1,8 @@
 package com.example.jangboo.oauth.client;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -13,9 +16,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import com.example.jangboo.oauth.controller.dto.response.AccountInfoResponse;
-import com.example.jangboo.oauth.controller.dto.response.OpenBankingTokenResponse;
+import com.example.jangboo.oauth.client.response.AccountInfoResponse;
+import com.example.jangboo.oauth.client.response.MockTransactionResponse;
+import com.example.jangboo.oauth.client.response.OpenBankingTokenResponse;
+import com.example.jangboo.oauth.client.response.TransactionResponse;
 import com.example.jangboo.oauth.token.dto.TokenInfo;
+import com.example.jangboo.oauth.client.request.TransactionRequest;
 
 @Component
 public class OpenBankingClient {
@@ -117,5 +123,51 @@ public class OpenBankingClient {
 			entity,
 			AccountInfoResponse.class
 		);
+	}
+
+	public ResponseEntity<MockTransactionResponse> getTransactions(String accessToken, TransactionRequest request) {
+		String accountInfoUrl = "https://openapi.openbanking.or.kr/v2.0/account/transaction_list/fin_num";
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Authorization", "Bearer " + accessToken);  // Access Token 추가
+		headers.setContentType(MediaType.APPLICATION_JSON);
+
+		String urlTemplate = UriComponentsBuilder.fromHttpUrl(accountInfoUrl)
+			.queryParam("bank_tran_id", request.bankTranId())
+			.queryParam("fintech_use_num", request.fintechUseNum())
+			.queryParam("inquiry_type", "A")
+			.queryParam("inquiry_base", "D")
+			.queryParam("from_date", request.fromDate())
+			.queryParam("to_date", request.toDate())
+			.queryParam("tran_dtime", DateTimeFormatter(LocalDate.now()))
+			.encode()
+			.toUriString();
+
+		HttpEntity<?> entity = new HttpEntity<>(headers);
+
+		ResponseEntity<TransactionResponse> response = restTemplate.exchange(
+			urlTemplate,
+			HttpMethod.GET,
+			entity,
+			TransactionResponse.class
+		);
+
+		return getMockTransactions(request);
+	}
+
+	public ResponseEntity<MockTransactionResponse> getMockTransactions(TransactionRequest request) {
+		String accountInfoUrl = "http://localhost:8000/transations";
+
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(accountInfoUrl)
+			.queryParam("account_id", request.bankTranId())
+			.queryParam("start_date", request.fromDate())
+			.queryParam("end_date", request.toDate());
+
+		return restTemplate.getForEntity(builder.toUriString(), MockTransactionResponse.class);
+	}
+
+	private String DateTimeFormatter(LocalDate date){
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+		return date.format(formatter);
 	}
 }
