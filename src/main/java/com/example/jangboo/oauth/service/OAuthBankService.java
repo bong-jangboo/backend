@@ -60,7 +60,7 @@ public class OAuthBankService {
 	}
 
 	private String LocalDateToString(LocalDate date) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		return date.format(formatter);
 	}
 
