@@ -1,5 +1,7 @@
 package com.example.jangboo.account.service;
 
+import java.util.NoSuchElementException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,5 +26,11 @@ public class AccountService {
 				.ownerId(userId)
 				.build()
 		);
+	}
+
+	public String getFintechUseNum(Long userId) {
+		return accountRepository.findByOwnerId(userId)
+			.orElseThrow(()-> new NoSuchElementException("존재하지 않는 계정아이디 입니다."))
+			.getFintechUseNum();
 	}
 }

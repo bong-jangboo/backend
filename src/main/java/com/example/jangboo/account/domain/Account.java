@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -19,6 +20,7 @@ public class Account {
 	@Column(name="account_id")
 	private Long id;
 
+	@Getter
 	@Column(name="fintech_use_num")
 	private String fintechUseNum;
 
