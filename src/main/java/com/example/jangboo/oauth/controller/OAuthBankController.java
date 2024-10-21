@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.view.RedirectView;
 
 import com.example.jangboo.auth.controller.dto.Info.CurrentUserInfo;
 import com.example.jangboo.global.dto.ResultDto;
@@ -24,15 +23,10 @@ public class OAuthBankController {
 	}
 
 	@GetMapping("/open-bank")
-	public RedirectView redirectToOpenBank(@AuthenticationPrincipal CurrentUserInfo userInfo) {
-		return new RedirectView(oAuthBankService.getAuthUrl(userInfo.userId()));
-	}
-/*  test용
-	@GetMapping("/open-bank")
 	public String redirectToOpenBank(@AuthenticationPrincipal CurrentUserInfo userInfo) {
 		return oAuthBankService.getAuthUrl(userInfo.userId());
 	}
-*/
+
 	@GetMapping("/token")
 	public ResponseEntity<ResultDto<Void>> getOpenBankToken(
 		@RequestParam String code,

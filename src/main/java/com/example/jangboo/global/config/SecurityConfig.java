@@ -3,6 +3,7 @@ package com.example.jangboo.global.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,7 +29,8 @@ public class SecurityConfig{
 			.cors(cors->cors.disable())
 			.csrf(csrf -> csrf.disable())  // CSRF 보호 비활성화
 			.authorizeHttpRequests(auth -> auth
-				.requestMatchers("/api/univ/register/**","api/auth/login","/api/oauth/**").permitAll()// 로그인, 회원가입은 모두 허용
+				.requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
+				.requestMatchers("/api/univ/register/**","api/auth/login","/api/oauth/**","/api/role/main").permitAll()// 로그인, 회원가입은 모두 허용
 				.requestMatchers("/api/univ/signup-link").hasAnyRole("AUDITOR","PRESIDENT")
 				.anyRequest().authenticated()  // 그 외 모든 요청은 인증 필요
 			)

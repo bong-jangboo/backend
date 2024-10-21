@@ -12,6 +12,8 @@ import com.example.jangboo.auth.controller.dto.request.LoginRequest;
 import com.example.jangboo.auth.controller.dto.response.JwtToken;
 import com.example.jangboo.auth.domain.user.CustomUserDetails;
 import com.example.jangboo.auth.domain.user.CustomUserDetailsService;
+import com.example.jangboo.role.domain.RoleType;
+import com.example.jangboo.role.service.RoleService;
 
 @Service
 public class AuthService {
@@ -36,4 +38,8 @@ public class AuthService {
 		final JwtToken jwt = jwtTokenProvider.generateToken(userDetails);
 		return jwt;
 	}
+
+
+
+
 }

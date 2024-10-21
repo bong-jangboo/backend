@@ -26,4 +26,28 @@ public class RoleService {
 				.build()
 		);
 	}
+
+	@Transactional(readOnly = true)
+	public RoleType getCurrentRole(Long studentId) {
+		return roleRepository.findByStudentIdAndEndDate(studentId, null).get(0).getRole();
+	}
+
+	public String getMainPageUrl(Long userId) {
+		String role = getCurrentRole(userId).toString();
+
+		switch (role) {
+			case "PRESIDENT":
+				return "main_president.html";
+			case "VICE_PRESIDENT":
+				return "main_vice-president.html";
+			case "MANAGER":
+				return "main_manager.html";
+			case "AUDITOR":
+				return "main_auditor.html";
+			case "STUDENT":
+				return "main_normal.html";
+			default:
+				return "역할이 없습니다.";
+		}
+	}
 }

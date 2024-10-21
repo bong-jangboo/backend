@@ -32,7 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
 		// 요청에서 Authorization 헤더를 추출하여 JWT 토큰 가져오기
 		final String authorizationHeader = request.getHeader(HEADER_AUTHORIZATION);
-
+		System.out.println("filter:"+authorizationHeader);
 		CurrentUserInfo userInfo = null;
 		String jwt = null;
 
