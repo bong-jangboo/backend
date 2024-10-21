@@ -8,10 +8,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -156,14 +158,24 @@ public class OpenBankingClient {
 	}
 
 	public ResponseEntity<MockTransactionResponse> getMockTransactions(TransactionRequest request) {
-		String accountInfoUrl = "http://localhost:8000/transations";
+		String accountInfoUrl = "http://localhost:8000/transactions";
 
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(accountInfoUrl)
-			.queryParam("account_id", request.bankTranId())
+			.queryParam("account_id", request.fintechUseNum())
 			.queryParam("start_date", request.fromDate())
-			.queryParam("end_date", request.toDate());
+			.queryParam("end_date", request.toDate())
+			.queryParam("start_time",request.fromTime())
+			.queryParam("end_time",request.toTime());
 
-		return restTemplate.getForEntity(builder.toUriString(), MockTransactionResponse.class);
+		try {
+			ResponseEntity<MockTransactionResponse> response = restTemplate.getForEntity(builder.toUriString(), MockTransactionResponse.class);
+			return response;
+		} catch (HttpServerErrorException e) {
+			if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+				throw new RuntimeException("최근 거래내역이 없습니다.");
+			}
+			throw e;
+		}
 	}
 
 	private String DateTimeFormatter(LocalDate date){

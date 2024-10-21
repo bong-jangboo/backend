@@ -1,9 +1,11 @@
 package com.example.jangboo.oauth.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Component;
 
 import com.example.jangboo.account.service.AccountService;
@@ -47,21 +49,31 @@ public class OAuthBankService {
 		TokenInfo tokenInfo = tokenService.getTokenInfoByUserId(userId);
 		TransactionRequest request = getTransactionRequestInfo(userId);
 
-		return client.getTransactions(tokenInfo.accessToken(), request).getBody();
+		return transactionService.saveTransactions(Optional.ofNullable(
+			client.getTransactions(tokenInfo.accessToken(), request).getBody()
+		).orElseThrow(() -> new IllegalStateException("거래 내역을 가져오지 못했습니다.")),userId);
 	}
 
 	private TransactionRequest getTransactionRequestInfo(Long userId) {
+		LocalDateTime latestDateTime = transactionService.findLatestUpdatedTransactionDateTime(userId);
 		return new TransactionRequest(
 			"1234",
 			accountService.getFintechUseNum(userId),
-			LocalDateToString(transactionService.findLatestUpdatedTransactionDate(userId)),
-			LocalDateToString(LocalDate.now())
+			LocalDateToString(latestDateTime.toLocalDate()),
+			LocalDateToString(LocalDate.now()),
+			LocalTimeToString(latestDateTime.toLocalTime().plusSeconds(1)),
+			LocalTimeToString(LocalDateTime.now().toLocalTime())
 		);
 	}
 
 	private String LocalDateToString(LocalDate date) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		return date.format(formatter);
+	}
+
+	private String LocalTimeToString(LocalTime time) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+		return time.format(formatter);
 	}
 
 }

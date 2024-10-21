@@ -23,19 +23,19 @@ public class TransactionService {
 		this.transactionRepository = transactionRepository;
 	}
 
-	public LocalDate findLatestUpdatedTransactionDate(Long userId) {
-		return transactionRepository.findTopByAccountOwnerIdOrderByDateDesc(userId)
-			.map(Transaction::getDate)
-			.orElseGet(this::getFistDayOfYear);
+	public LocalDateTime findLatestUpdatedTransactionDateTime(Long userId) {
+		return transactionRepository
+			.findTopByAccountOwnerIdOrderByDateDescTimeDesc(userId)
+			.map(transaction -> LocalDateTime.of(transaction.getDate(), transaction.getTime()))
+			.orElseGet(this::getFirstDayOfYear);
 	}
 
-	private LocalDate getFistDayOfYear() {
-		return LocalDate.of(LocalDate.now().getYear(), 1, 1);
+	private LocalDateTime getFirstDayOfYear() {
+		return LocalDateTime.of(LocalDate.now().withDayOfYear(1), LocalTime.MIDNIGHT); // 1월 1일 00:00:00
 	}
 
 	@Transactional
 	public MockTransactionResponse saveTransactions (MockTransactionResponse transaction,Long userId){
-		// Transaction 엔티티 리스트 생성 및 저장
 		List<Transaction> transactions = transaction.transactions().stream()
 			.map(t -> Transaction.builder()
 				.transactionType(t.transactionType())
@@ -48,10 +48,8 @@ public class TransactionService {
 			)
 			.collect(Collectors.toList());
 
-		// 저장된 모든 거래내역을 repository에 저장
 		transactionRepository.saveAll(transactions);
 
-		// 필요한 응답 객체 반환
 		return transaction;
 	}
 

@@ -23,7 +23,7 @@ public class AccountController {
 	@PostMapping("/register")
 	public ResponseEntity<ResultDto<Void>> registerAccount(
 		@AuthenticationPrincipal CurrentUserInfo userInfo,
-		@RequestParam String fintechUseNum
+		@RequestParam(name="fintech_use_num") String fintechUseNum
 	){
 		accountService.registerAccount(userInfo.userId(),fintechUseNum);
 		return ResponseEntity.ok(ResultDto.of(200,"계좌가 정상적으로 등록되었습니다.",null));

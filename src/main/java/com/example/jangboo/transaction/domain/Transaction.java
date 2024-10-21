@@ -45,6 +45,7 @@ public class Transaction {
 	@Column(name="date")
 	private LocalDate date;
 
+	@Getter
 	@Column(name="time")
 	private LocalTime time;
 
