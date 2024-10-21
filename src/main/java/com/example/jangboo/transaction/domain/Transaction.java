@@ -35,9 +35,10 @@ public class Transaction {
 	@Column(name="amount")
 	private String amount;
 
-	@Column(name="transactionType")
+	@Column(name="transaction_type")
 	private String transactionType;
 
+	@Getter
 	@Column(name="balance")
 	private String balance;
 
