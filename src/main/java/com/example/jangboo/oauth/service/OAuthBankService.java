@@ -45,11 +45,11 @@ public class OAuthBankService {
 		return client.getAccountInfo(tokenInfo.userSeqNo(),tokenInfo.accessToken()).getBody();
 	}
 
-	public MockTransactionResponse getTransactions(Long userId) throws Exception {
+	public void getTransactions(Long userId) throws Exception {
 		TokenInfo tokenInfo = tokenService.getTokenInfoByUserId(userId);
 		TransactionRequest request = getTransactionRequestInfo(userId);
 
-		return transactionService.saveTransactions(Optional.ofNullable(
+		transactionService.saveTransactions(Optional.ofNullable(
 			client.getTransactions(tokenInfo.accessToken(), request).getBody()
 		).orElseThrow(() -> new IllegalStateException("거래 내역을 가져오지 못했습니다.")),userId);
 	}

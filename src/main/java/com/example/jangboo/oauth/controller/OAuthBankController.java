@@ -50,11 +50,11 @@ public class OAuthBankController {
 		return ResponseEntity.ok(ResultDto.of(200,"유저의 계좌정보리스트가 조회되었습니다.",oAuthBankService.getAccountInfo(
 			userInfo.userId())));
 	}
-q
+
 	@GetMapping("/transactions")
-	public ResponseEntity<ResultDto<MockTransactionResponse>> getTransactions(@AuthenticationPrincipal CurrentUserInfo userInfo) throws
+	public ResponseEntity<ResultDto<Void>>getTransactions(@AuthenticationPrincipal CurrentUserInfo userInfo) throws
 		Exception {
-		return ResponseEntity.ok(ResultDto.of(200,"유저의 거래내역이 조회되었습니다.",oAuthBankService.getTransactions(
-			userInfo.userId())));
+		oAuthBankService.getTransactions(userInfo.userId());
+		return ResponseEntity.ok(ResultDto.of(200,"유저의 거래내역이 업데이트 되었습니다.",null));
 	}
 }
