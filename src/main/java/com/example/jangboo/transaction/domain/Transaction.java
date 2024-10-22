@@ -3,6 +3,9 @@ package com.example.jangboo.transaction.domain;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import com.example.jangboo.transaction.controller.dto.response.Info.TransactionInfo;
+import com.example.jangboo.transaction.controller.dto.response.TransactionsResponse;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,6 +23,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "transaction",indexes = {
 	@Index(name = "idx_transaction_date", columnList = "date")}
 )
+@Getter
 public class Transaction {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

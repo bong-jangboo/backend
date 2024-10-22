@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.jangboo.oauth.client.response.MockTransactionResponse;
+import com.example.jangboo.transaction.controller.dto.response.Info.TransactionInfo;
+import com.example.jangboo.transaction.controller.dto.response.TransactionsResponse;
 import com.example.jangboo.transaction.domain.Transaction;
 import com.example.jangboo.transaction.domain.TransactionRepository;
 
@@ -71,7 +73,26 @@ public class TransactionService {
 	public String getLatestBalance(Long accountOwnerId) {
 		return transactionRepository
 			.findTopByAccountOwnerIdOrderByDateDescTimeDesc(accountOwnerId)
-			.orElseThrow(() -> new IllegalStateException("거래 내역을 가져오지 못했습니다."))
+			.orElseThrow(() -> new IllegalStateException("잔액을 가져오지 못했습니다."))
 			.getBalance();
+	}
+
+	@Transactional(readOnly = true)
+	public TransactionsResponse getTop5Transactions(Long accountOwnerId) {
+		List<Transaction> transactions = transactionRepository.findTop5ByAccountOwnerIdOrderByDateDescTimeDesc(accountOwnerId);
+
+		return new TransactionsResponse(
+			transactions.stream().map(
+				transaction -> TransactionInfo.builder()
+					.transaction_type(transaction.getTransactionType())
+					.lable(transaction.getLable())
+					.date(transaction.getDate().toString())
+					.amount(transaction.getAmount())
+					.description(transaction.getDescription())
+					.balance(transaction.getBalance())
+					.time(transaction.getTime().toString())
+					.build()
+			).toList()
+		);
 	}
 }

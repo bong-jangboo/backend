@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.jangboo.auth.controller.dto.Info.CurrentUserInfo;
 import com.example.jangboo.global.dto.ResultDto;
+import com.example.jangboo.transaction.controller.dto.response.TransactionsResponse;
 import com.example.jangboo.transaction.service.TransactionService;
 
 @RestController
@@ -20,9 +21,18 @@ public class TransactionController {
 	}
 
 	@GetMapping("/balance")
-	public ResponseEntity<ResultDto<String>> balance(
+	public ResponseEntity<ResultDto<String>> getBalance(
 		@AuthenticationPrincipal CurrentUserInfo userInfo
 	) {
 		return ResponseEntity.ok(ResultDto.of(200,"잔액이 조회되었습니다.",transactionService.getLatestBalance(userInfo.userId())));
+	}
+
+	@GetMapping("/latest")
+	public ResponseEntity<ResultDto<TransactionsResponse>> getLatestTransactions(
+		@AuthenticationPrincipal CurrentUserInfo userInfo
+	){
+		return ResponseEntity.ok(ResultDto.of(200,"최근 거래내역이 조회되었습니다.",transactionService.getTop5Transactions(
+			userInfo.userId())));
+
 	}
 }
