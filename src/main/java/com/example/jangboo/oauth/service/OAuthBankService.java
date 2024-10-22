@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.jangboo.account.service.AccountService;
 import com.example.jangboo.oauth.client.OpenBankingClient;
@@ -42,7 +43,9 @@ public class OAuthBankService {
 
 	public AccountInfoResponse getAccountInfo(Long userId) throws Exception {
 		TokenInfo tokenInfo = tokenService.getTokenInfoByUserId(userId);
-		return client.getAccountInfo(tokenInfo.userSeqNo(),tokenInfo.accessToken()).getBody();
+		AccountInfoResponse response = client.getAccountInfo(tokenInfo.userSeqNo(),tokenInfo.accessToken()).getBody();
+
+		return response;
 	}
 
 	public void getTransactions(Long userId) throws Exception {
@@ -51,7 +54,7 @@ public class OAuthBankService {
 
 		transactionService.saveTransactions(Optional.ofNullable(
 			client.getTransactions(tokenInfo.accessToken(), request).getBody()
-		).orElseThrow(() -> new IllegalStateException("거래 내역을 가져오지 못했습니다.")),userId);
+		).orElseThrow(() -> new IllegalStateException("거래 내역이 업데이트 되지 않았습니다.")),userId);
 	}
 
 	private TransactionRequest getTransactionRequestInfo(Long userId) {
@@ -76,4 +79,9 @@ public class OAuthBankService {
 		return time.format(formatter);
 	}
 
+	public boolean isVerified(Long userId) throws Exception {
+		return (tokenService.getTokenInfoByUserId(userId).accessToken() != null)&&(
+			accountService.isNotExist(userId)
+			);
+	}
 }

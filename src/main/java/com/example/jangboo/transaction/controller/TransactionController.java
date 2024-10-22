@@ -24,15 +24,15 @@ public class TransactionController {
 	public ResponseEntity<ResultDto<String>> getBalance(
 		@AuthenticationPrincipal CurrentUserInfo userInfo
 	) {
-		return ResponseEntity.ok(ResultDto.of(200,"잔액이 조회되었습니다.",transactionService.getLatestBalance(userInfo.userId())));
+		return ResponseEntity.ok(
+			ResultDto.of(200, "잔액이 조회되었습니다.", transactionService.getLatestBalance(userInfo.deptId())));
 	}
 
 	@GetMapping("/latest")
 	public ResponseEntity<ResultDto<TransactionsResponse>> getLatestTransactions(
 		@AuthenticationPrincipal CurrentUserInfo userInfo
-	){
-		return ResponseEntity.ok(ResultDto.of(200,"최근 거래내역이 조회되었습니다.",transactionService.getTop5Transactions(
-			userInfo.userId())));
-
+	) {
+		return ResponseEntity.ok(ResultDto.of(200, "최근 거래내역이 조회되었습니다.", transactionService.getTop5Transactions(
+			userInfo.deptId())));
 	}
 }

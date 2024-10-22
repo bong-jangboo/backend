@@ -33,4 +33,8 @@ public class AccountService {
 			.orElseThrow(()-> new NoSuchElementException("존재하지 않는 계정아이디 입니다."))
 			.getFintechUseNum();
 	}
+
+	public boolean isNotExist(Long userId) {
+		return accountRepository.findByOwnerId(userId).isEmpty();
+	}
 }

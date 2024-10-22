@@ -12,8 +12,7 @@ public class WebConfig implements WebMvcConfigurer {
 		registry.addMapping("/api/**")
 			.allowedOrigins("http://127.0.0.1:5500")  // 프론트엔드 주소 허용
 			.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")  // Preflight 요청 허용
-			.allowedHeaders("Authorization", "Content-Type")
-			.exposedHeaders("Authorization")
+			.allowedHeaders("*")
 			.allowCredentials(true)
 			.maxAge(3600);
 	}

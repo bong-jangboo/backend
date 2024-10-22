@@ -24,9 +24,9 @@ public class TransactionService {
 		this.transactionRepository = transactionRepository;
 	}
 
-	public LocalDateTime findLatestUpdatedTransactionDateTime(Long userId) {
+	public LocalDateTime findLatestUpdatedTransactionDateTime(Long deptId) {
 		return transactionRepository
-			.findTopByAccountOwnerIdOrderByDateDescTimeDesc(userId)
+			.findTopByDeptIdOrderByDateDescTimeDesc(deptId)
 			.map(transaction -> LocalDateTime.of(transaction.getDate(), transaction.getTime()))
 			.orElseGet(this::getFirstDayOfYear);
 	}
@@ -70,16 +70,16 @@ public class TransactionService {
 	}
 
 	@Transactional(readOnly = true)
-	public String getLatestBalance(Long accountOwnerId) {
+	public String getLatestBalance(Long DeptId) {
 		return transactionRepository
-			.findTopByAccountOwnerIdOrderByDateDescTimeDesc(accountOwnerId)
+			.findTopByDeptIdOrderByDateDescTimeDesc(DeptId)
 			.orElseThrow(() -> new IllegalStateException("잔액을 가져오지 못했습니다."))
 			.getBalance();
 	}
 
 	@Transactional(readOnly = true)
 	public TransactionsResponse getTop5Transactions(Long accountOwnerId) {
-		List<Transaction> transactions = transactionRepository.findTop5ByAccountOwnerIdOrderByDateDescTimeDesc(accountOwnerId);
+		List<Transaction> transactions = transactionRepository.findTop5ByDeptIdOrderByDateDescTimeDesc(accountOwnerId);
 
 		return new TransactionsResponse(
 			transactions.stream().map(

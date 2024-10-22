@@ -33,6 +33,9 @@ public class Transaction {
 	@Column(name="account_owner_id")
 	private Long accountOwnerId;
 
+	@Column(name="dept_id")
+	private Long deptId;
+
 	@Column(name="lable")
 	private String lable;
 
@@ -58,8 +61,9 @@ public class Transaction {
 	private String description;
 
 	@Builder
-	public Transaction(Long accountOwnerId, String lable, String amount, String transactionType, String balance, LocalDate date, LocalTime time, String description) {
+	public Transaction(Long accountOwnerId, Long deptId, String lable, String amount, String transactionType, String balance, LocalDate date, LocalTime time, String description) {
 		this.accountOwnerId = accountOwnerId;
+		this.deptId = deptId;
 		this.lable = lable;
 		this.amount = amount;
 		this.transactionType = transactionType;
