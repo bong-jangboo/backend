@@ -1,25 +1,25 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.3.3'
-	id 'io.spring.dependency-management' version '1.1.6'
-	id 'org.asciidoctor.jvm.convert' version "3.3.2"
+    id 'java'
+    id 'org.springframework.boot' version '3.3.3'
+    id 'io.spring.dependency-management' version '1.1.6'
+    id 'org.asciidoctor.jvm.convert' version "3.3.2"
 }
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
-	}
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
 
 configurations {
-	asciidoctorExtensions
+    asciidoctorExtensions
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
@@ -29,73 +29,76 @@ dependencies {
 	implementation 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
-	// Spring Security
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	testImplementation 'org.springframework.security:spring-security-test'
+    // Spring Security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    testImplementation 'org.springframework.security:spring-security-test'
 
 
-	//SPRING_REST_DOCS
-	asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
-	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    //SPRING_REST_DOCS
+    asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 
-	//JWT
-	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
-	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    //JWT
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
-	//VALIDATION
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
+    //VALIDATION
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-	//MYSQL
-	runtimeOnly 'com.mysql:mysql-connector-j'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	testImplementation 'com.h2database:h2'
+    //MYSQL
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    testImplementation 'com.h2database:h2'
 
 
-	//JSONObject
-	implementation 'org.json:json:20230227'
+    //JSONObject
+    implementation 'org.json:json:20230227'
+
+    // swagger
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 
 	//AWS
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 }
 
 ext {
-	snippetsDir = file('./build/generated-snippets')
+    snippetsDir = file('./build/generated-snippets')
 }
 
 test {
-	useJUnitPlatform()
-	outputs.dir snippetsDir
+    useJUnitPlatform()
+    outputs.dir snippetsDir
 }
 
 asciidoctor.doFirst {
-	delete file("src/main/resources/static/docs")
+    delete file("src/main/resources/static/docs")
 }
 
 asciidoctor {
-	inputs.dir snippetsDir
-	dependsOn test
-	configurations 'asciidoctorExtensions'
+    inputs.dir snippetsDir
+    dependsOn test
+    configurations 'asciidoctorExtensions'
 }
 
 bootJar {
-	dependsOn asciidoctor
-	copy {
-		from("${asciidoctor.outputDir}")
-		into 'src/main/resources/static/docs'
-	}
+    dependsOn asciidoctor
+    copy {
+        from("${asciidoctor.outputDir}")
+        into 'src/main/resources/static/docs'
+    }
 }
 
 task copyDocument(type: Copy) {
-	dependsOn asciidoctor
-	from file("$build/docs/asciidoc")
-	into file("src/main/resources/static/docs")
+    dependsOn asciidoctor
+    from file("$build/docs/asciidoc")
+    into file("src/main/resources/static/docs")
 }
 
 build {
-	dependsOn copyDocument
+    dependsOn copyDocument
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
