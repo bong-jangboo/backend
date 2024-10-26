@@ -50,10 +50,15 @@ public class AppointServiceImpl implements AppointService {
 			throw new IllegalArgumentException("역할이 유효하지 않습니다. (VICE_PRESIDENT 또는 MANAGER만 가능합니다)");
 		}
 
+		// 현재 userId와 newRoleType이 동일한 역할을 가진 경우 예외 발생
+		roleRepository.findByStudentIdAndRole(user.getId(), newRoleType).ifPresent(existingRole -> {
+			throw new IllegalArgumentException("해당 사용자는 이미 " + newRoleType + " 역할을 가지고 있습니다.");
+		});
+
 		// 새로운 역할 저장
 		Role newRole = Role.builder()
 			.role(newRoleType)
-			.studentId(user.getId())  // userId로 저장
+			.studentId(user.getId())
 			.build();
 
 		roleRepository.save(newRole);
