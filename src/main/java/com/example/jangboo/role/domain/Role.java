@@ -32,7 +32,7 @@ public class Role {
 	private RoleType role;
 
 	@Column(name="student_id")
-	private Long userId;
+	private Long studentId;
 
 	@CreationTimestamp
 	@Column(name="start_date")
@@ -42,8 +42,8 @@ public class Role {
 	private LocalDate endDate;
 
 	@Builder
-	public Role(RoleType role, Long userId) {
+	public Role(RoleType role, Long studentId) {
 		this.role = role;
-		this.userId = userId;
+		this.studentId = studentId;
 	}
 }
