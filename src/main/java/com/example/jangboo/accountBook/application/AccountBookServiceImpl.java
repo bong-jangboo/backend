@@ -164,7 +164,7 @@ public class AccountBookServiceImpl implements AccountBookService {
                 .toList();
     }
 
-    //장부 승인 및 반려하기
+    // 장부 승인 및 반려하기
     @Override
     @Transactional
     public void approveAccountBook(ApproveAccountBookRequestDto requestDto) {
@@ -184,13 +184,18 @@ public class AccountBookServiceImpl implements AccountBookService {
                 .orElseThrow(() -> new IllegalArgumentException("역할이 존재하지 않음"));
 
         // 승인 여부 업데이트
-        // 상위 직급의 승인 여부는 이미 승인 해야할 장부 조회 API에서 걸러졌기 때문에 예외 처리를 안 함
         if (roleType == RoleType.VICE_PRESIDENT) {
             accountBookSign.setVicePresidentApproval(requestDto.isApproval());
         } else if (roleType == RoleType.PRESIDENT) {
             accountBookSign.setPresidentApproval(requestDto.isApproval());
         } else if (roleType == RoleType.AUDITOR) {
             accountBookSign.setAuditApproval(requestDto.isApproval());
+            // AUDITOR가 승인할 경우, 모든 승인 상태가 true라면 AccountBook의 상태를 PUBLIC으로 변경
+            if (requestDto.isApproval()
+                    && accountBookSign.getPresidentApproval()
+                    && accountBookSign.getVicePresidentApproval()) {
+                accountBook.setStatus(AccountBookStatus.PUBLIC);
+            }
         } else {
             throw new IllegalArgumentException("승인 권한이 없는 역할입니다.");
         }
@@ -210,4 +215,5 @@ public class AccountBookServiceImpl implements AccountBookService {
         accountBookSignRepository.save(accountBookSign);
         accountBookRepository.save(accountBook);
     }
+
 }
