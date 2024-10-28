@@ -1,5 +1,6 @@
 package com.example.jangboo.accountBook.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,6 +12,7 @@ import org.hibernate.annotations.Comment;
 @Getter
 @NoArgsConstructor
 @ToString
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class AccountBookSign {
 
     @Id
