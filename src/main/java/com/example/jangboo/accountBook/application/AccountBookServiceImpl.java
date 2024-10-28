@@ -6,6 +6,7 @@ import com.example.jangboo.accountBook.domain.AccountBookStatus;
 import com.example.jangboo.accountBook.dto.in.ApproveAccountBookListRequestDto;
 import com.example.jangboo.accountBook.dto.in.ApproveAccountBookRequestDto;
 import com.example.jangboo.accountBook.dto.in.CreateAccountBookRequestDto;
+import com.example.jangboo.accountBook.dto.in.UpdateAccountBookRequestDto;
 import com.example.jangboo.accountBook.dto.out.AccountBookDetailResponseDto;
 import com.example.jangboo.accountBook.dto.out.AccountBookResponseDto;
 import com.example.jangboo.accountBook.dto.out.ApproveAccountBookListResponseDto;
@@ -70,6 +71,35 @@ public class AccountBookServiceImpl implements AccountBookService {
         accountBookRepository.save(accountBook);
         accountBookSignRepository.save(accountBookSign);
     }
+
+    @Override
+    @Transactional
+    public void updateAccountBook(Long accountBookId, UpdateAccountBookRequestDto updateRequestDto) {
+
+        // AccountBook 찾기
+        AccountBook accountBook = accountBookRepository.findById(accountBookId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 장부가 존재하지 않습니다."));
+
+        // 필드 업데이트
+        accountBook.updateAccountBook(updateRequestDto.getDocNum(),
+                updateRequestDto.getCreatedAt(),
+                updateRequestDto.getTitle(),
+                updateRequestDto.getContent(),
+                updateRequestDto.getAmount());
+
+        // 상태를 UNAUDITED로 변경
+        accountBook.setStatus(AccountBookStatus.UNAUDITED);
+
+        // AccountBookSign 상태 초기화
+        AccountBookSign accountBookSign = accountBook.getAccountBookSign();
+        accountBookSign.setPresidentApproval(false);
+        accountBookSign.setVicePresidentApproval(false);
+        accountBookSign.setAuditApproval(false);
+
+        accountBookRepository.save(accountBook);
+        accountBookSignRepository.save(accountBookSign);
+    }
+
 
     //장부 리스트 조회
     @Override

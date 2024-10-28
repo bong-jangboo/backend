@@ -5,10 +5,12 @@ import com.example.jangboo.accountBook.domain.AccountBookStatus;
 import com.example.jangboo.accountBook.dto.in.ApproveAccountBookListRequestDto;
 import com.example.jangboo.accountBook.dto.in.ApproveAccountBookRequestDto;
 import com.example.jangboo.accountBook.dto.in.CreateAccountBookRequestDto;
+import com.example.jangboo.accountBook.dto.in.UpdateAccountBookRequestDto;
 import com.example.jangboo.accountBook.dto.out.AccountBookDetailResponseDto;
 import com.example.jangboo.accountBook.dto.out.AccountBookResponseDto;
 import com.example.jangboo.accountBook.dto.out.ApproveAccountBookListResponseDto;
 import com.example.jangboo.accountBook.vo.in.CreateAccountBookRequestVo;
+import com.example.jangboo.accountBook.vo.in.UpdateAccountBookRequestVo;
 import com.example.jangboo.accountBook.vo.out.AccountBookDetailResponseVo;
 import com.example.jangboo.accountBook.vo.out.AccountBookResponseVo;
 import com.example.jangboo.accountBook.vo.out.ApproveAccountBookListResponseVo;
@@ -56,6 +58,26 @@ public class AccountBookController {
 
         return ResponseEntity.ok(ResultDto.of(200, "장부 등록 성공", null));
     }
+
+    @Operation(summary = "장부 수정하기", tags = {"장부"})
+    @PutMapping("/{accountBookId}")
+    public ResponseEntity<ResultDto<String>> updateAccountBook(
+            @PathVariable Long accountBookId,
+            @RequestBody UpdateAccountBookRequestVo updateRequestVo) {
+
+        UpdateAccountBookRequestDto updateRequestDto = UpdateAccountBookRequestDto.builder()
+                .docNum(updateRequestVo.getDocNum())
+                .createdAt(updateRequestVo.getCreatedAt())
+                .title(updateRequestVo.getTitle())
+                .content(updateRequestVo.getContent())
+                .amount(updateRequestVo.getAmount())
+                .build();
+
+        accountBookService.updateAccountBook(accountBookId, updateRequestDto);
+
+        return ResponseEntity.ok(ResultDto.of(200, "장부 수정 성공", null));
+    }
+
 
     //장부 리스트 조회
     @Operation(summary = "장부 리스트 조회", tags = {"장부"})
