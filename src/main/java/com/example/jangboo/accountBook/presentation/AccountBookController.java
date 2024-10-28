@@ -37,8 +37,9 @@ public class AccountBookController {
     //장부 등록하기
     @Operation(summary = "장부 등록하기", tags = {"장부"})
     @PostMapping
-    public ResponseEntity<ResultDto<String>> createAccountBook(@RequestBody CreateAccountBookRequestVo createAccountBookRequestVo,
-                                                               @AuthenticationPrincipal CurrentUserInfo info) {
+    public ResponseEntity<ResultDto<String>> createAccountBook(
+            @RequestBody CreateAccountBookRequestVo createAccountBookRequestVo,
+            @AuthenticationPrincipal CurrentUserInfo info) {
         CreateAccountBookRequestDto createAccountBookRequestDto = CreateAccountBookRequestDto.builder()
                 .userId(info.userId())
                 .receiptId(createAccountBookRequestVo.getReceiptId())
@@ -64,17 +65,18 @@ public class AccountBookController {
             @RequestParam(required = false) LocalDateTime fromDate,
             @RequestParam(required = false) LocalDateTime toDate,
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int pageSize) {
+            @RequestParam(defaultValue = "10") int pageSize,
+            @AuthenticationPrincipal CurrentUserInfo info) {
 
         PageRequest pageable = PageRequest.of(page - 1, pageSize);
 
-        Page<AccountBookResponseDto> accountBooks = accountBookService.getAccountBookList(AccountBookStatus.valueOf(status), fromDate, toDate, pageable);
+        Page<AccountBookResponseDto> accountBooks = accountBookService.getAccountBookList(
+                AccountBookStatus.valueOf(status), fromDate, toDate, pageable, info.deptId());
 
         Page<AccountBookResponseVo> accountBookResponseVos = accountBooks.map(AccountBookResponseDto::toVo);
 
         return ResponseEntity.ok(ResultDto.of(200, "장부 조회 성공", accountBookResponseVos));
     }
-
 
     // 장부 상세 조회
     @Operation(summary = "장부 상세 조회", tags = {"장부"})
@@ -90,14 +92,16 @@ public class AccountBookController {
     // 승인 해야할 장부 조회
     @Operation(summary = "승인 해야할 장부 조회", tags = {"장부"})
     @GetMapping("/approve")
-    public ResponseEntity<ResultDto<List<ApproveAccountBookListResponseVo>>> getApproveAccountBookList(@AuthenticationPrincipal CurrentUserInfo info) {
+    public ResponseEntity<ResultDto<List<ApproveAccountBookListResponseVo>>> getApproveAccountBookList(
+            @AuthenticationPrincipal CurrentUserInfo info) {
 
         ApproveAccountBookListRequestDto approveAccountBookListRequestDto = ApproveAccountBookListRequestDto.builder()
                 .userId(info.userId())
                 .deptId(info.deptId())
                 .build();
 
-        List<ApproveAccountBookListResponseDto> accountBooks = accountBookService.getApproveAccountBookList(approveAccountBookListRequestDto);
+        List<ApproveAccountBookListResponseDto> accountBooks = accountBookService.getApproveAccountBookList(
+                approveAccountBookListRequestDto);
 
         List<ApproveAccountBookListResponseVo> accountBookResponseVos = accountBooks.stream()
                 .map(ApproveAccountBookListResponseDto::toVo)

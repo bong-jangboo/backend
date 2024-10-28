@@ -20,7 +20,8 @@ public interface AccountBookService {
     Page<AccountBookResponseDto> getAccountBookList(AccountBookStatus status,
                                                     LocalDateTime fromDate,
                                                     LocalDateTime toDate,
-                                                    Pageable pageable);
+                                                    Pageable pageable,
+                                                    Long deptId);
 
     AccountBookDetailResponseDto getAccountBook(Long accountBookId);
 

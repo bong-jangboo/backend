@@ -77,13 +77,13 @@ public class AccountBookServiceImpl implements AccountBookService {
     public Page<AccountBookResponseDto> getAccountBookList(AccountBookStatus status,
                                                            LocalDateTime fromDate,
                                                            LocalDateTime toDate,
-                                                           Pageable pageable) {
-
-        Page<AccountBook> accountBooks = accountBookRepository.findByStatusAndDateRange(status,
+                                                           Pageable pageable,
+                                                           Long deptId) {
+        Page<AccountBook> accountBooks = accountBookRepository.findAccountBooksByConditions(status,
                 fromDate,
                 toDate,
-                pageable);
-
+                pageable,
+                deptId);
         return accountBooks.map(AccountBookResponseDto::fromEntity);
     }
 
@@ -101,7 +101,8 @@ public class AccountBookServiceImpl implements AccountBookService {
     //승인 해야할 장부 조회
     @Override
     @Transactional(readOnly = true)
-    public List<ApproveAccountBookListResponseDto> getApproveAccountBookList(ApproveAccountBookListRequestDto requestDto) {
+    public List<ApproveAccountBookListResponseDto> getApproveAccountBookList(
+            ApproveAccountBookListRequestDto requestDto) {
 
         List<Role> roles = roleRepository.findByStudentId(requestDto.getUserId());
 
@@ -114,13 +115,16 @@ public class AccountBookServiceImpl implements AccountBookService {
 
         if (roleType == RoleType.VICE_PRESIDENT) {
             //장부 상태가 미감사인 것 중 부회장 승인이 안 된 것
-            accountBooks = accountBookRepository.findByStatusAndAccountBookSign_VicePresidentApprovalFalse(AccountBookStatus.UNAUDITED);
+            accountBooks = accountBookRepository.findByStatusAndAccountBookSign_VicePresidentApprovalFalse(
+                    AccountBookStatus.UNAUDITED);
         } else if (roleType == RoleType.PRESIDENT) {
             //장부 상태가 미감사인 것 중 부회장 승인은 됐고 회장 승인은 안 된 것
-            accountBooks = accountBookRepository.findByStatusAndAccountBookSign_VicePresidentApprovalTrueAndAccountBookSign_PresidentApprovalFalse(AccountBookStatus.UNAUDITED);
+            accountBooks = accountBookRepository.findByStatusAndAccountBookSign_VicePresidentApprovalTrueAndAccountBookSign_PresidentApprovalFalse(
+                    AccountBookStatus.UNAUDITED);
         } else if (roleType == RoleType.AUDITOR) {
             //장부 상태가 미감사인 것 중 부회장, 회장 승인은 됐고 감사 승인은 안 된 것
-            accountBooks = accountBookRepository.findByStatusAndAccountBookSign_PresidentApprovalTrueAndAccountBookSign_VicePresidentApprovalTrueAndAccountBookSign_AuditApprovalFalse(AccountBookStatus.UNAUDITED);
+            accountBooks = accountBookRepository.findByStatusAndAccountBookSign_PresidentApprovalTrueAndAccountBookSign_VicePresidentApprovalTrueAndAccountBookSign_AuditApprovalFalse(
+                    AccountBookStatus.UNAUDITED);
         } else {
             throw new IllegalArgumentException("승인 권한이 없는 역할입니다.");
         }
