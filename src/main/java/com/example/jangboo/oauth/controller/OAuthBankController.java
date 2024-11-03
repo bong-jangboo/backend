@@ -56,7 +56,7 @@ public class OAuthBankController {
 		response.addCookie(jwtCookie);
 
 		RedirectView redirectView = new RedirectView();
-		redirectView.setUrl("http://localhost:5500/pages/main/main_manager.html");
+		redirectView.setUrl("http://localhost:5500/");
 		return redirectView;
 	}
 

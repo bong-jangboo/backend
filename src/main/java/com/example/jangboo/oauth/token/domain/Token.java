@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-@RedisHash(value = "open_banking_token", timeToLive = 3600)
+@RedisHash(value = "open_banking_token", timeToLive = 36000)
 public class Token implements Serializable {
 	@Id
 	private Long id;
