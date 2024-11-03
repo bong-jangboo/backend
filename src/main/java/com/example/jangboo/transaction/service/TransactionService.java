@@ -36,7 +36,7 @@ public class TransactionService {
 	}
 
 	@Transactional
-	public void saveTransactions (MockTransactionResponse transaction,Long userId){
+	public void saveTransactions (MockTransactionResponse transaction,Long userId,Long deptId){
 		System.out.println(transaction.transactions().get(0).transaction_type());
 		List<Transaction> transactions = transaction.transactions().stream()
 			.map(t -> Transaction.builder()
@@ -48,6 +48,7 @@ public class TransactionService {
 				.balance(t.balance())
 				.lable(t.lable())
 				.accountOwnerId(userId)
+				.deptId(deptId)
 				.build()
 			)
 			.collect(Collectors.toList());

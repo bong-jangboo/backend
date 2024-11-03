@@ -48,13 +48,13 @@ public class OAuthBankService {
 		return response;
 	}
 
-	public void getTransactions(Long userId) throws Exception {
+	public void getTransactions(Long userId,Long deptId) throws Exception {
 		TokenInfo tokenInfo = tokenService.getTokenInfoByUserId(userId);
 		TransactionRequest request = getTransactionRequestInfo(userId);
 
 		transactionService.saveTransactions(Optional.ofNullable(
 			client.getTransactions(tokenInfo.accessToken(), request).getBody()
-		).orElseThrow(() -> new IllegalStateException("거래 내역이 업데이트 되지 않았습니다.")),userId);
+		).orElseThrow(() -> new IllegalStateException("거래 내역이 업데이트 되지 않았습니다.")),userId,deptId);
 	}
 
 	private TransactionRequest getTransactionRequestInfo(Long userId) {
