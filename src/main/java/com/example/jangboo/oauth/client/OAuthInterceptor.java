@@ -25,7 +25,12 @@ public class OAuthInterceptor implements ClientHttpRequestInterceptor {
 
 	@Override
 	public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
-		TokenInfo token = tokenService.getTokenInfoByUserId(userId);
+		TokenInfo token = null;
+		try {
+			token = tokenService.getTokenInfoByUserId(userId);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 		String accessToken = token.accessToken();
 		String refreshToken = token.refreshToken();
 
