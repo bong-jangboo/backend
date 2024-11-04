@@ -168,8 +168,7 @@ public class OpenBankingClient {
 			.queryParam("end_time",request.toTime());
 
 		try {
-			ResponseEntity<MockTransactionResponse> response = restTemplate.getForEntity(builder.toUriString(), MockTransactionResponse.class);
-			return response;
+			return restTemplate.getForEntity(builder.toUriString(), MockTransactionResponse.class);
 		} catch (HttpServerErrorException e) {
 			if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
 				throw new RuntimeException("최근 거래내역이 없습니다.");

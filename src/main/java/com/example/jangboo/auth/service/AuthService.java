@@ -12,6 +12,7 @@ import com.example.jangboo.auth.controller.dto.request.LoginRequest;
 import com.example.jangboo.auth.controller.dto.response.JwtToken;
 import com.example.jangboo.auth.domain.user.CustomUserDetails;
 import com.example.jangboo.auth.domain.user.CustomUserDetailsService;
+import com.example.jangboo.oauth.token.dto.TokenInfo;
 import com.example.jangboo.role.domain.RoleType;
 import com.example.jangboo.role.service.RoleService;
 
@@ -37,6 +38,11 @@ public class AuthService {
 			request.loginId());
 		final JwtToken jwt = jwtTokenProvider.generateToken(userDetails);
 		return jwt;
+	}
+
+	public JwtToken getNewJwt(Long userId){
+		final CustomUserDetails userDetails = (CustomUserDetails)customUserDetailsService.loadUserById(userId);
+		return jwtTokenProvider.generateToken(userDetails);
 	}
 
 

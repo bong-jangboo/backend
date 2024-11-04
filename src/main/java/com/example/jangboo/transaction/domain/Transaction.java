@@ -3,6 +3,9 @@ package com.example.jangboo.transaction.domain;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import com.example.jangboo.transaction.controller.dto.response.Info.TransactionInfo;
+import com.example.jangboo.transaction.controller.dto.response.TransactionsResponse;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,6 +23,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "transaction",indexes = {
 	@Index(name = "idx_transaction_date", columnList = "date")}
 )
+@Getter
 public class Transaction {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,15 +33,19 @@ public class Transaction {
 	@Column(name="account_owner_id")
 	private Long accountOwnerId;
 
+	@Column(name="dept_id")
+	private Long deptId;
+
 	@Column(name="lable")
 	private String lable;
 
 	@Column(name="amount")
 	private String amount;
 
-	@Column(name="transactionType")
+	@Column(name="transaction_type")
 	private String transactionType;
 
+	@Getter
 	@Column(name="balance")
 	private String balance;
 
@@ -53,8 +61,9 @@ public class Transaction {
 	private String description;
 
 	@Builder
-	public Transaction(Long accountOwnerId, String lable, String amount, String transactionType, String balance, LocalDate date, LocalTime time, String description) {
+	public Transaction(Long accountOwnerId, Long deptId, String lable, String amount, String transactionType, String balance, LocalDate date, LocalTime time, String description) {
 		this.accountOwnerId = accountOwnerId;
+		this.deptId = deptId;
 		this.lable = lable;
 		this.amount = amount;
 		this.transactionType = transactionType;

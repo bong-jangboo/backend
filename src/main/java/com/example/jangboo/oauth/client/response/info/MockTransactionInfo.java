@@ -3,7 +3,7 @@ package com.example.jangboo.oauth.client.response.info;
 public record MockTransactionInfo(
 	String lable,
 	String amount,
-	String transactionType,
+	String transaction_type,
 	String balance,
 	String date,
 	String time,

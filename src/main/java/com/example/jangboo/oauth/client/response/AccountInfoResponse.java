@@ -5,6 +5,8 @@ import java.util.List;
 import com.example.jangboo.oauth.client.response.info.AccountInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.Getter;
+
 public class AccountInfoResponse {
 	@JsonProperty("api_tran_id")
 	private String apiTranId;
@@ -12,6 +14,7 @@ public class AccountInfoResponse {
 	@JsonProperty("api_tran_dtm")
 	private String apiTranDtm;
 
+	@Getter
 	@JsonProperty("rsp_code")
 	private String rspCode;
 
