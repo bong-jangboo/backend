@@ -1,5 +1,13 @@
 package com.example.jangboo.accountBook.application;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.example.jangboo.accountBook.domain.AccountBook;
 import com.example.jangboo.accountBook.domain.AccountBookSign;
 import com.example.jangboo.accountBook.domain.AccountBookStatus;
@@ -15,15 +23,9 @@ import com.example.jangboo.accountBook.infrastructure.AccountBookSignRepository;
 import com.example.jangboo.role.domain.Role;
 import com.example.jangboo.role.domain.RoleRepository;
 import com.example.jangboo.role.domain.RoleType;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Slf4j
 @Service
@@ -39,37 +41,37 @@ public class AccountBookServiceImpl implements AccountBookService {
     @Transactional
     public void createAccountBook(CreateAccountBookRequestDto requestDto) {
 
-        // Role 엔티티에서 userId에 해당하는 Role을 가져옴
-        Role userRole = roleRepository.findByStudentId(requestDto.getUserId()).stream().findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("역할을 찾을 수 없습니다."));
+      // Role 엔티티에서 userId에 해당하는 Role을 가져옴
+      Role userRole = roleRepository.findByStudentId(requestDto.getUserId()).stream().findFirst()
+        .orElseThrow(() -> new IllegalArgumentException("역할을 찾을 수 없습니다."));
 
-        // RoleType이 AUDITOR가 아닐 경우 예외 처리
-        if (userRole.getRole() != RoleType.AUDITOR) {
-            throw new IllegalArgumentException("장부 등록은 감사(AUDITOR)만 가능합니다.");
-        }
+      // RoleType이 MANAGER가 아닐 경우 예외 처리
+      if (userRole.getRole() != RoleType.MANAGER) {
+        throw new IllegalArgumentException("장부 등록은 총무(MANAGER)만 가능합니다.");
+      }
 
-        AccountBook accountBook = AccountBook.builder()
-                .receiptId(requestDto.getReceiptId())
-                .deptId(requestDto.getDeptId())
-                .transactionId(requestDto.getTransactionId())
-                .docNum(requestDto.getDocNum())
-                .createdAt(requestDto.getCreatedAt())
-                .title(requestDto.getTitle())
-                .content(requestDto.getContent())
-                .amount(requestDto.getAmount())
-                .status(AccountBookStatus.UNAUDITED)
-                .build();
+      AccountBook accountBook = AccountBook.builder()
+        .receiptId(requestDto.getReceiptId())
+        .deptId(requestDto.getDeptId())
+        .transactionId(requestDto.getTransactionId())
+        .docNum(requestDto.getDocNum())
+        .createdAt(requestDto.getCreatedAt())
+        .title(requestDto.getTitle())
+        .content(requestDto.getContent())
+        .amount(requestDto.getAmount())
+        .status(AccountBookStatus.UNAUDITED)
+        .build();
 
-        AccountBookSign accountBookSign = AccountBookSign.builder()
-                .presidentApproval(false)
-                .vicePresidentApproval(false)
-                .auditApproval(false)
-                .build();
+      AccountBookSign accountBookSign = AccountBookSign.builder()
+        .presidentApproval(false)
+        .vicePresidentApproval(false)
+        .auditApproval(false)
+        .build();
 
-        accountBook.setAccountBookSign(accountBookSign);
+      accountBook.setAccountBookSign(accountBookSign);
 
-        accountBookRepository.save(accountBook);
-        accountBookSignRepository.save(accountBookSign);
+      accountBookRepository.save(accountBook);
+      accountBookSignRepository.save(accountBookSign);
     }
 
     @Override
@@ -215,5 +217,4 @@ public class AccountBookServiceImpl implements AccountBookService {
         accountBookSignRepository.save(accountBookSign);
         accountBookRepository.save(accountBook);
     }
-
 }

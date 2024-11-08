@@ -1,7 +1,9 @@
 package com.example.jangboo.oauth.token.domain;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-public interface TokenRepository extends JpaRepository<Token, Long> {
+@Repository
+public interface TokenRepository extends CrudRepository<Token, Long> {
 	Token findByOwnerId(Long ownerId);
 }

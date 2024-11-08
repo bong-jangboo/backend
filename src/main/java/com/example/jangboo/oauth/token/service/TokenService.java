@@ -21,6 +21,7 @@ public class TokenService {
 
 	@Transactional
 	public Void createTokenInfo(TokenInfo tokenInfo,Long userId) throws Exception {
+		System.out.println(tokenInfo.userSeqNo()+" "+tokenInfo.accessToken());
 		tokenRepository.save(
 			Token.builder()
 				.accessToken(getEncryptedToken(tokenInfo.accessToken()))
@@ -40,14 +41,15 @@ public class TokenService {
 		return tokenEncryptor.decrypt(token);
 	}
 
-	public TokenInfo getTokenInfoByUserId(Long userId) {
+	public TokenInfo getTokenInfoByUserId(Long userId) throws Exception {
 		Token token = tokenRepository.findByOwnerId(userId);
-		return new TokenInfo(token.getAccessToken(),token.getRefreshToken(),token.getUserSeqNo());
+		return new TokenInfo(getDecryptedToken(token.getAccessToken()),getDecryptedToken(token.getRefreshToken()),token.getUserSeqNo());
 	}
 
 	@Transactional
 	public void refreshTokens(Long userId, TokenInfo tokenInfo) {
 		Token token = tokenRepository.findByOwnerId(userId);
+
 		token.refresh(tokenInfo.accessToken(),tokenInfo.refreshToken());
 	}
 }
