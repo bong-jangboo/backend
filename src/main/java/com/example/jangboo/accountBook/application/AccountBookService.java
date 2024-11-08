@@ -4,6 +4,7 @@ import com.example.jangboo.accountBook.domain.AccountBookStatus;
 import com.example.jangboo.accountBook.dto.in.ApproveAccountBookListRequestDto;
 import com.example.jangboo.accountBook.dto.in.ApproveAccountBookRequestDto;
 import com.example.jangboo.accountBook.dto.in.CreateAccountBookRequestDto;
+import com.example.jangboo.accountBook.dto.in.UpdateAccountBookRequestDto;
 import com.example.jangboo.accountBook.dto.out.AccountBookDetailResponseDto;
 import com.example.jangboo.accountBook.dto.out.AccountBookResponseDto;
 import com.example.jangboo.accountBook.dto.out.ApproveAccountBookListResponseDto;
@@ -17,10 +18,13 @@ public interface AccountBookService {
 
     void createAccountBook(CreateAccountBookRequestDto requestDto);
 
+    void updateAccountBook(Long accountBookId, UpdateAccountBookRequestDto requestDto);
+
     Page<AccountBookResponseDto> getAccountBookList(AccountBookStatus status,
                                                     LocalDateTime fromDate,
                                                     LocalDateTime toDate,
-                                                    Pageable pageable);
+                                                    Pageable pageable,
+                                                    Long deptId);
 
     AccountBookDetailResponseDto getAccountBook(Long accountBookId);
 
