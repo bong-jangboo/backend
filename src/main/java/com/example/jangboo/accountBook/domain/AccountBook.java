@@ -80,4 +80,12 @@ public class AccountBook {
     public void setStatus(AccountBookStatus status) {
         this.status = status;
     }
+
+    public void updateAccountBook(Long docNum, LocalDateTime createdAt, String title, String content, Long amount) {
+        this.docNum = docNum;
+        this.createdAt = createdAt;
+        this.title = title;
+        this.content = content;
+        this.amount = amount;
+    }
 }
