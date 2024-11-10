@@ -7,7 +7,9 @@ import com.example.jangboo.file.domain.File;
 import com.example.jangboo.file.domain.FileRepository;
 import com.example.jangboo.file.domain.FileStatus;
 import com.example.jangboo.file.domain.FileType;
+import com.example.jangboo.file.event.ReceiptUploadedEvent;
 import com.example.jangboo.infra.aws.S3FileStorageService;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,10 +22,12 @@ import java.util.Optional;
 public class ReceiptUploadService {
     private final FileStorageService fileStorageService;
     private final FileRepository fileRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public ReceiptUploadService(FileRepository fileRepository, FileStorageService fileStorageService) {
+    public ReceiptUploadService(FileRepository fileRepository, FileStorageService fileStorageService, ApplicationEventPublisher eventPublisher) {
         this.fileRepository = fileRepository;
         this.fileStorageService = fileStorageService;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional
@@ -43,8 +47,8 @@ public class ReceiptUploadService {
                 String fileUrl = fileStorageService.uploadFile(file,"receipt");
 
                 // 파일정보 저장
-                fileRepository.save(new File(fileName, userInfo.deptId(),fileUrl,FileType.RECEIPT, FileStatus.UPLOADED));
-
+                File savedfile = fileRepository.save(new File(fileName, userInfo.deptId(),fileUrl,FileType.RECEIPT, FileStatus.UPLOADED));
+                eventPublisher.publishEvent(new ReceiptUploadedEvent(savedfile.getId(), savedfile.getFileUrl()));
                 // 업로드 결과 추가
                 fileUploadResults.add(new FileUploadResult(FileType.RECEIPT, fileName,true, fileUrl));
 
