@@ -2,17 +2,14 @@ package com.example.jangboo.receipt.controller;
 
 import com.example.jangboo.auth.controller.dto.Info.CurrentUserInfo;
 import com.example.jangboo.global.dto.ResultDto;
-import com.example.jangboo.receipt.controller.dto.response.ReceiptUploadResponse;
+import com.example.jangboo.receipt.controller.dto.response.ReceiptResponse;
 import com.example.jangboo.receipt.service.ReceiptService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/receipt")
@@ -24,12 +21,23 @@ public class ReceiptController {
         this.receiptService = receiptService;
     }
 
-    @PostMapping("/upload")
-    public ResponseEntity<ResultDto<ReceiptUploadResponse>> upload(
-            @RequestParam("receipts") List<MultipartFile> receipts,
-            @AuthenticationPrincipal CurrentUserInfo userInfo) {
-        ReceiptUploadResponse response = receiptService.uploadReceipt(receipts, userInfo);
 
-        return ResponseEntity.ok(ResultDto.of(201,"영수증 업로드 결과",response));
+    @GetMapping("")
+    public ResponseEntity<ResultDto<ReceiptResponse>> getReceipts(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "transactionDate,desc") String sort,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
+            @AuthenticationPrincipal CurrentUserInfo userInfo) {
+
+        // 유효성 검사: fromDate가 toDate보다 이후일 경우 예외 발생
+        if (fromDate != null && toDate != null && fromDate.isAfter(toDate)) {
+            throw new IllegalArgumentException("시작 날짜는 종료 날짜보다 이후일 수 없습니다.");
+        }
+
+        Long deptId = userInfo.deptId();
+        ReceiptResponse response = receiptService.getReceipt(deptId, page, size, sort, fromDate, toDate);
+        return ResponseEntity.ok().body(ResultDto.of(200, "영수증 리스트 조회 성공", response));
     }
 }

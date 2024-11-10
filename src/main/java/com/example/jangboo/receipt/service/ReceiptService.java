@@ -1,38 +1,53 @@
 package com.example.jangboo.receipt.service;
 
-import com.example.jangboo.auth.controller.dto.Info.CurrentUserInfo;
-import com.example.jangboo.receipt.controller.dto.response.ReceiptUploadResponse;
-import com.example.jangboo.receipt.controller.dto.response.ReceiptUploadResult;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
+import com.example.jangboo.receipt.controller.dto.response.ReceiptDto;
+import com.example.jangboo.receipt.controller.dto.response.ReceiptResponse;
+import com.example.jangboo.receipt.domain.Receipt;
+import com.example.jangboo.receipt.domain.ReceiptRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ReceiptService {
 
-    public ReceiptUploadResponse uploadReceipt(List<MultipartFile> images, CurrentUserInfo userInfo) {
-        int successCount = 0;
-        int failureCount = 0;
-        List<ReceiptUploadResult> results = new ArrayList<>();
+    private final ReceiptRepository receiptRepository;
 
-        for (MultipartFile image : images) {
-            String filename = image.getOriginalFilename();
-            try {
-                // 파일 업로드 로직
-                // s3 이용
+    public ReceiptResponse getReceipt(Long deptId, int page, int size, String sort, LocalDate fromDate, LocalDate toDate) {
+        Pageable pageable = PageRequest.of(page-1, size, Sort.by((sort.split(","))));
+        Page<Receipt> receiptPage;
 
-                // 영수증 정보 저장 로직
-                // 외부 api 이용
-                // 비동기 처리
-                results.add(new ReceiptUploadResult(filename, true, "test", 1L));
-                successCount++;
-            } catch (Exception e){
-                failureCount++;
-            }
+        if(fromDate != null && toDate != null) {
+
+            LocalDateTime from = fromDate.atStartOfDay();
+            LocalDateTime to = toDate.plusDays(1).atStartOfDay().minusNanos(1);
+            receiptPage = receiptRepository.findByDeptIdAndTransactionDateBetween(deptId, from, to, pageable);
+        } else {
+            receiptPage = receiptRepository.findByDeptId(deptId, pageable);
         }
-        return new ReceiptUploadResponse(successCount, failureCount, results);
+
+        List<ReceiptDto> receiptDtoList = receiptPage.getContent().stream()
+                .map(ReceiptDto::from)
+                .collect(Collectors.toList());
+
+        return ReceiptResponse.builder()
+                .currentPage(receiptPage.getNumber()+1)
+                .pageSize(receiptPage.getSize())
+                .totalPages(receiptPage.getTotalPages())
+                .totalReceipts((int)receiptPage.getTotalElements())
+                .receipts(receiptDtoList)
+                .build();
     }
+
 
 }
