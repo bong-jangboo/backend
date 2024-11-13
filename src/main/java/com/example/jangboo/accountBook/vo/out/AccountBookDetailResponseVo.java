@@ -19,5 +19,4 @@ public class AccountBookDetailResponseVo {
     private String content;
     private Long amount;
     private String status;
-
 }

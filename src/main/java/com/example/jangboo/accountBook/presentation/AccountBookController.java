@@ -104,6 +104,7 @@ public class AccountBookController {
     @Operation(summary = "장부 상세 조회", tags = {"장부"})
     @GetMapping("/{accountBookId}")
     public ResponseEntity<ResultDto<AccountBookDetailResponseVo>> getAccountBook(
+
             @PathVariable Long accountBookId) {
 
         AccountBookDetailResponseDto accountBook = accountBookService.getAccountBook(accountBookId);

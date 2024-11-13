@@ -37,28 +37,28 @@ public class OAuthBankController {
 		return oAuthBankService.getAuthUrl(userInfo.userId());
 	}
 
-	// @GetMapping("/token")
-	// public RedirectView getOpenBankToken(
-	// 	@RequestParam String code,
-	// 	@RequestParam String scope,
-	// 	@RequestParam String state,
-	// 	@RequestParam("client_info") Long userId,
-	// 	HttpServletResponse response
-	// ) throws Exception {
-	// 	oAuthBankService.getAccessToken(code,userId);
-	//
-	// 	JwtToken token = authService.getNewJwt(userId);
-	//
-	// 	Cookie jwtCookie = new Cookie("accessToken", token.accessToken());
-	// 	jwtCookie.setHttpOnly(true);
-	// 	jwtCookie.setMaxAge(60 * 60); // 1시간 동안 유효
-	// 	jwtCookie.setPath("/");      // 전체 경로에서 사용 가능
-	// 	response.addCookie(jwtCookie);
-	//
-	// 	RedirectView redirectView = new RedirectView();
-	// 	redirectView.setUrl("http://localhost:5500/pages/main/main_manager.html");
-	// 	return redirectView;
-	// }
+	@GetMapping("/token")
+	public RedirectView getOpenBankToken(
+		@RequestParam String code,
+		@RequestParam String scope,
+		@RequestParam String state,
+		@RequestParam("client_info") Long userId,
+		HttpServletResponse response
+	) throws Exception {
+		oAuthBankService.getAccessToken(code,userId);
+
+		JwtToken token = authService.getNewJwt(userId);
+
+		Cookie jwtCookie = new Cookie("accessToken", token.accessToken());
+		jwtCookie.setHttpOnly(true);
+		jwtCookie.setMaxAge(60 * 60); // 1시간 동안 유효
+		jwtCookie.setPath("/");      // 전체 경로에서 사용 가능
+		response.addCookie(jwtCookie);
+
+		RedirectView redirectView = new RedirectView();
+		redirectView.setUrl("http://localhost:5500/");
+		return redirectView;
+	}
 
 	@GetMapping("/account-list")
 	public ResponseEntity<ResultDto<AccountInfoResponse>> getAccountList(@AuthenticationPrincipal CurrentUserInfo userInfo) throws
@@ -70,7 +70,7 @@ public class OAuthBankController {
 	@GetMapping("/transactions")
 	public ResponseEntity<ResultDto<Void>>getTransactions(@AuthenticationPrincipal CurrentUserInfo userInfo) throws
 		Exception {
-		oAuthBankService.getTransactions(userInfo.userId());
+		oAuthBankService.getTransactions(userInfo.userId(),userInfo.deptId());
 		return ResponseEntity.ok(ResultDto.of(200,"유저의 거래내역이 업데이트 되었습니다.",null));
 	}
 

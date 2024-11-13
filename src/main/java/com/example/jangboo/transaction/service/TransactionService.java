@@ -4,21 +4,29 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.jangboo.oauth.client.response.MockTransactionResponse;
+import com.example.jangboo.transaction.controller.dto.request.TransactionByDateRequest;
 import com.example.jangboo.transaction.controller.dto.response.Info.TransactionInfo;
+import com.example.jangboo.transaction.controller.dto.response.TransactionPageResponse;
 import com.example.jangboo.transaction.controller.dto.response.TransactionsResponse;
 import com.example.jangboo.transaction.domain.Transaction;
-import com.example.jangboo.transaction.domain.TransactionRepository;
+import com.example.jangboo.transaction.domain.repository.TransactionRepository;
 
 @Service
 public class TransactionService {
 	private final TransactionRepository transactionRepository;
+
+	public static final int PAGE_SIZE = 10;
 
 	public TransactionService(TransactionRepository transactionRepository) {
 		this.transactionRepository = transactionRepository;
@@ -36,8 +44,7 @@ public class TransactionService {
 	}
 
 	@Transactional
-	public void saveTransactions (MockTransactionResponse transaction,Long userId){
-		System.out.println(transaction.transactions().get(0).transaction_type());
+	public void saveTransactions (MockTransactionResponse transaction,Long userId,Long deptId){
 		List<Transaction> transactions = transaction.transactions().stream()
 			.map(t -> Transaction.builder()
 				.transactionType(t.transaction_type())
@@ -48,6 +55,7 @@ public class TransactionService {
 				.balance(t.balance())
 				.lable(t.lable())
 				.accountOwnerId(userId)
+				.deptId(deptId)
 				.build()
 			)
 			.collect(Collectors.toList());
@@ -82,17 +90,21 @@ public class TransactionService {
 		List<Transaction> transactions = transactionRepository.findTop5ByDeptIdOrderByDateDescTimeDesc(accountOwnerId);
 
 		return new TransactionsResponse(
-			transactions.stream().map(
-				transaction -> TransactionInfo.builder()
-					.transaction_type(transaction.getTransactionType())
-					.lable(transaction.getLable())
-					.date(transaction.getDate().toString())
-					.amount(transaction.getAmount())
-					.description(transaction.getDescription())
-					.balance(transaction.getBalance())
-					.time(transaction.getTime().toString())
-					.build()
-			).toList()
+			transactions.stream().map(TransactionInfo::from).toList()
 		);
+	}
+
+	@Transactional
+	public TransactionPageResponse getTransactionsByDate(String fromDate,String toDate,Long deptId,int pageNo){
+		LocalDate parsedFromDate = (LocalDate)parseDateTime(fromDate, "yyyy-MM-dd");
+		LocalDate parsedToDate = (LocalDate)parseDateTime(toDate, "yyyy-MM-dd");
+
+		Page<Transaction> transactions = transactionRepository.findByDeptIdAndDateBetween(deptId,parsedFromDate,parsedToDate,getPageable(pageNo,PAGE_SIZE));
+		return new TransactionPageResponse(transactions.getContent().stream().map(TransactionInfo::from).toList(),
+			transactions.getNumber(),transactions.getTotalPages());
+	}
+
+	private Pageable getPageable(int pageNo, int pageSize) {
+		return PageRequest.of(pageNo, pageSize);
 	}
 }
