@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 @AllArgsConstructor
@@ -12,10 +14,10 @@ public class ReceiptDto {
     private Long receiptId;
     private String store;
     private int amount;
-    private String transactionDate;
+    private LocalDateTime transactionDate;
 
     public static ReceiptDto from(Receipt receipt) {
-        ReceiptDto dto = new ReceiptDto().builder()
+        return ReceiptDto.builder()
                 .receiptId(receipt.getId())
                 .store(receipt.getReceiptDetails().getStore())
                 .amount(receipt.getReceiptDetails().getAmount())
