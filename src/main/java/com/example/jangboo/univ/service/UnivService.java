@@ -3,11 +3,13 @@ package com.example.jangboo.univ.service;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.jangboo.univ.controller.dto.request.RegisterRequest;
 import com.example.jangboo.role.service.RoleService;
+import com.example.jangboo.univ.controller.dto.response.UnivInfoResponse;
 import com.example.jangboo.univ.domain.Univ;
 import com.example.jangboo.univ.domain.UnivRepository;
 import com.example.jangboo.users.service.UserService;
@@ -21,7 +23,7 @@ public class UnivService {
 	@Value("${jangboo.front_end.url}")
 	private String pageUrl;
 
-	public UnivService(UnivRepository univRepository, UserService userService, RoleService roleService) {
+	public UnivService(UnivRepository univRepository, @Lazy UserService userService, RoleService roleService) {
 		this.univRepository = univRepository;
 		this.userService = userService;
 		this.roleService = roleService;
@@ -50,7 +52,7 @@ public class UnivService {
 
 	private void registerAuditorOrPresident(RegisterRequest request, Long parentId, String role) {
 		Long orgId = registerOrg(request, parentId);
-		registerUser(request,orgId,role);
+		registerUser(request, orgId, role);
 	}
 
 	private Long registerOrg(RegisterRequest request, Long parentId) {
@@ -87,19 +89,26 @@ public class UnivService {
 	public String getSignUpLink(Long deptId) {
 		String orgType = getOrgType(deptId);
 		String singupLink = "";
-		switch (orgType){
+		switch (orgType) {
 			case "DEPARTURE":
-				singupLink+=String.format(pageUrl + "/pages/signup.html?&deptId=%d&role=%s", deptId, "STUDENT");
+				singupLink += String.format(pageUrl + "/pages/signup.html?&deptId=%d&role=%s", deptId, "STUDENT");
 				break;
 			case "COLLEGE":
-				singupLink+= String.format(pageUrl + "/pages/signup.html?&collegeId=%d&role=%s", deptId, "PRESIDENT");
+				singupLink += String.format(pageUrl + "/pages/signup.html?&collegeId=%d&role=%s", deptId, "PRESIDENT");
 				break;
 		}
 		return singupLink;
 	}
 
-	public String getOrgType(Long deptId){
+	public String getOrgType(Long deptId) {
 		return univRepository.findById(deptId).get().getOrgType().toString();
+	}
+
+	public UnivInfoResponse getParentInfo(Long childId) {
+		Univ child = univRepository.findById(childId).orElseThrow(() -> new IllegalArgumentException("Univ not found"));
+		Univ parent = child.getParent();
+
+		return new UnivInfoResponse(parent.getName(),child.getName());
 	}
 
 }

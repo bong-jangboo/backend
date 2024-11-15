@@ -20,6 +20,7 @@ import com.example.jangboo.univ.service.UnivService;
 
 @RestController
 @RequestMapping("/api/univ")
+@CrossOrigin(origins = "http://127.0.0.1:5500")
 public class UnivController {
 	private final UnivService univService;
 

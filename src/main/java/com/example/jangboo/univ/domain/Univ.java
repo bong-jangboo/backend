@@ -30,6 +30,7 @@ public class Univ {
 	@Getter
 	private Long id;
 
+	@Getter
 	@Column(name="name")
 	private String name;
 
@@ -38,6 +39,7 @@ public class Univ {
 	@Column(name="org_type")
 	private OrgType orgType;
 
+	@Getter
 	@ManyToOne
 	@JoinColumn(name = "parent_id")
 	private Univ parent;
