@@ -25,6 +25,7 @@ public class User {
 	@Column(name="dept_id")
 	private Long deptId;
 
+	@Getter
 	@Column(name="name")
 	private String name;
 
@@ -36,6 +37,7 @@ public class User {
 	@Column(name="password")
 	private String password;
 
+	@Getter
 	@Column(name="number")
 	private String number;
 
