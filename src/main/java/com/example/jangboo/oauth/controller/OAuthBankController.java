@@ -14,7 +14,6 @@ import com.example.jangboo.auth.controller.dto.response.JwtToken;
 import com.example.jangboo.auth.service.AuthService;
 import com.example.jangboo.global.dto.ResultDto;
 import com.example.jangboo.oauth.client.response.AccountInfoResponse;
-import com.example.jangboo.oauth.client.response.MockTransactionResponse;
 import com.example.jangboo.oauth.service.OAuthBankService;
 
 import jakarta.servlet.http.Cookie;
