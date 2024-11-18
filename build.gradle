@@ -54,6 +54,7 @@ dependencies {
 
     //JSONObject
     implementation 'org.json:json:20230227'
+    implementation 'com.jayway.jsonpath:json-path:2.7.0'
 
     // swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'

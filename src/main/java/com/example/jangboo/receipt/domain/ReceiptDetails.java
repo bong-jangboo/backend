@@ -1,5 +1,6 @@
 package com.example.jangboo.receipt.domain;
 
+import com.example.jangboo.receipt.controller.dto.ocr.OcrRes;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,7 +17,7 @@ public class ReceiptDetails {
     @Column(name = "details_id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "receipt_id")
     private Receipt receipt;
 
@@ -26,7 +27,7 @@ public class ReceiptDetails {
     @Column(name = "store")
     private String store;
 
-    @Column(name = "ammount")
+    @Column(name = "amount")
     private int amount;
 
     @Column(name = "transaction_date_time")
@@ -38,5 +39,18 @@ public class ReceiptDetails {
         this.store = store;
         this.amount = amount;
         this.transactionDate = transactionDate;
+    }
+
+    public static ReceiptDetails of(OcrRes.OcrResponse ocrResponse){
+        return new ReceiptDetails(
+                ocrResponse.getPaymentInfo().getConfirmNum(),
+                ocrResponse.getStoreInfo().getStoreName(),
+                Integer.parseInt(ocrResponse.getTotalPrice()),
+                ocrResponse.getPaymentInfo().getTransactionDateTime()
+        );
+    }
+
+    public void linkReceipt(Receipt receipt) {
+        this.receipt = receipt;
     }
 }

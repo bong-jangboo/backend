@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class OcrResult {
@@ -26,6 +28,13 @@ public class OcrResult {
         private String date;
         private String time;
         private String confirmNum;
+
+        public LocalDateTime getTransactionDateTime() {
+            String dateTimeString = date + " " + time;
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            return LocalDateTime.parse(dateTimeString, formatter);
+        }
 
         public static PaymentInfoRes of(OcrJsonRes.PaymentInfo paymentInfo) {
             return new PaymentInfoRes(

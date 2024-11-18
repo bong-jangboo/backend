@@ -1,11 +1,17 @@
 package com.example.jangboo.receipt.domain;
 
+import com.example.jangboo.receipt.controller.dto.ocr.OcrRes;
+import com.example.jangboo.receipt.controller.dto.ocr.OcrResult;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Getter
 public class ReceiptItem {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +37,14 @@ public class ReceiptItem {
         if(!receipt.getReceiptItems().contains(this)) {
             receipt.addReceiptItem(this);
         }
+    }
+
+    public static ReceiptItem of(OcrResult.PurchasedItem item) {
+        ReceiptItem receiptItem = new ReceiptItem();
+        receiptItem.name = item.getName();
+        receiptItem.count = Integer.parseInt(item.getCount());
+        receiptItem.price = Integer.parseInt(item.getPrice());
+        return receiptItem;
     }
 
 }

@@ -1,5 +1,7 @@
 package com.example.jangboo.receipt.domain;
 
+import com.example.jangboo.receipt.controller.dto.ocr.OcrRes;
+import com.example.jangboo.receipt.controller.dto.ocr.OcrResult;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,7 +23,7 @@ public class Receipt {
     @Column(name = "dept_id")
     private Long deptId;
 
-    @Column(name = "img_url")
+    @Column(name = "img_url", length = 1024)
     private String receiptImgUrl;
 
     @OneToOne(mappedBy = "receipt")
@@ -47,6 +49,21 @@ public class Receipt {
         if (item.getReceipt() != this) {
             item.linkReceipt(this);
         }
+    }
+
+    @Builder
+    public static Receipt of(Long deptId, String imgUrl, OcrRes.OcrResponse ocrResponse){
+            Receipt receipt = new Receipt(deptId, imgUrl);
+            ReceiptDetails receiptDetails = ReceiptDetails.of(ocrResponse);
+            receipt.receiptDetails = receiptDetails;
+            receiptDetails.linkReceipt(receipt);
+
+            List<OcrResult.PurchasedItem> purchasedItems = ocrResponse.getItems();
+            for (OcrResult.PurchasedItem item : purchasedItems) {
+                ReceiptItem receiptItem = ReceiptItem.of(item);
+                receipt.addReceiptItem(receiptItem);
+            }
+            return receipt;
     }
 
     public void updateReceiptDetails(String appcode, String store, int amount, LocalDateTime transactionDate){
