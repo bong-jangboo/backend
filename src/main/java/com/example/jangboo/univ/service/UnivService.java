@@ -106,9 +106,10 @@ public class UnivService {
 
 	public UnivInfoResponse getParentInfo(Long childId) {
 		Univ child = univRepository.findById(childId).orElseThrow(() -> new IllegalArgumentException("Univ not found"));
-		Univ parent = child.getParent();
+		String parentName = Optional.ofNullable(child.getParent())
+			.map(Univ::getName)
+			.orElse(null);
 
-		return new UnivInfoResponse(parent.getName(),child.getName());
+		return new UnivInfoResponse(parentName, child.getName());
 	}
-
 }
