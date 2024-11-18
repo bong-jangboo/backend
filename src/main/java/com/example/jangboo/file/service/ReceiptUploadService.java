@@ -48,7 +48,7 @@ public class ReceiptUploadService {
 
                 // 파일정보 저장
                 File savedfile = fileRepository.save(new File(fileName, userInfo.deptId(),fileUrl,FileType.RECEIPT, FileStatus.UPLOADED));
-                eventPublisher.publishEvent(new ReceiptUploadedEvent(savedfile.getId(), savedfile.getFileUrl()));
+                eventPublisher.publishEvent(new ReceiptUploadedEvent(userInfo.deptId(), savedfile.getId(), savedfile.getFileUrl()));
                 // 업로드 결과 추가
                 fileUploadResults.add(new FileUploadResult(FileType.RECEIPT, fileName,true, fileUrl));
 

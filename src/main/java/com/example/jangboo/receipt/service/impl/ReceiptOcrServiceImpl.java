@@ -37,12 +37,9 @@ public class ReceiptOcrServiceImpl implements ReceiptOcrService {
     private String apiUrl;
 
     @Override
-    public boolean ocrStart(Long fileId, String imageUrl) {
+    public OcrRes.OcrResponse ocrStart(String imageUrl) {
         try {
-            OcrRes.OcrResponse ocrResponse = getOcrData(imageUrl);
-            Receipt receipt = Receipt.of(fileId,imageUrl,ocrResponse);
-
-            return true;
+            return getOcrData(imageUrl);
         } catch (Exception e) {
             throw new CustomException(OcrErrorCode.OCR_FAIL);
         }

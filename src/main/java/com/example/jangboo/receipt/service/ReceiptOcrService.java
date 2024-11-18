@@ -3,6 +3,6 @@ import com.example.jangboo.receipt.controller.dto.ocr.OcrRes;
 
 
 public interface ReceiptOcrService {
-    boolean ocrStart(Long fileId, String imageUrl);
+    OcrRes.OcrResponse ocrStart(String imageUrl);
     OcrRes.OcrResponse getOcrData(String imageUrl);
 }

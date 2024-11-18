@@ -1,6 +1,7 @@
 package com.example.jangboo.receipt.service;
 
 
+import com.example.jangboo.receipt.controller.dto.ocr.OcrRes;
 import com.example.jangboo.receipt.controller.dto.response.ReceiptDto;
 import com.example.jangboo.receipt.controller.dto.response.ReceiptResponse;
 import com.example.jangboo.receipt.domain.Receipt;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -47,6 +49,12 @@ public class ReceiptService {
                 .totalReceipts((int)receiptPage.getTotalElements())
                 .receipts(receiptDtoList)
                 .build();
+    }
+
+    @Transactional
+    public void saveOcrReceipt(Long deptId, String imgUrl,OcrRes.OcrResponse ocrResponse) {
+        Receipt receipt = Receipt.of(deptId,imgUrl,ocrResponse);
+        receiptRepository.save(receipt);
     }
 
 
