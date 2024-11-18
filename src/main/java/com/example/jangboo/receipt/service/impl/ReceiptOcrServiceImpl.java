@@ -11,6 +11,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -27,13 +28,14 @@ import static org.hibernate.query.sqm.tree.SqmNode.log;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ReceiptOcrServiceImpl implements ReceiptOcrService {
 
     private final ReceiptUtils receiptUtils;
 
-    @Value("${ocr-api-secret}")
+    @Value("${jangboo.ocr.api-secret}")
     private String apiSecret;
-    @Value("${ocr-api-url}")
+    @Value("${jangboo.ocr.api-url}")
     private String apiUrl;
 
     @Override
@@ -41,6 +43,7 @@ public class ReceiptOcrServiceImpl implements ReceiptOcrService {
         try {
             return getOcrData(imageUrl);
         } catch (Exception e) {
+            log.error(e.toString(), e);
             throw new CustomException(OcrErrorCode.OCR_FAIL);
         }
     }
@@ -49,6 +52,7 @@ public class ReceiptOcrServiceImpl implements ReceiptOcrService {
     public OcrRes.OcrResponse getOcrData(String imageUrl) {
         StringBuffer response = new StringBuffer();
         String jsonText = "";
+        long startTime = System.currentTimeMillis(); // 시작 시간 기록
         try {
 
             URL requestURL = new URL(apiUrl);
@@ -88,6 +92,9 @@ public class ReceiptOcrServiceImpl implements ReceiptOcrService {
             log.error(e.toString());
             throw new CustomException(OcrErrorCode.OCR_FAIL);
         }
+        long endTime = System.currentTimeMillis(); // 종료 시간 기록
+        long duration = endTime - startTime; // 응답 시간 계산
+        log.info("OCR API response time: {} ms", duration); // 응답 시간 로그
 
         ObjectMapper mapper = new ObjectMapper();
         if (JsonPath.read(jsonText, "$.images[0].receipt") != null) {
