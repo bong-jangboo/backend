@@ -26,7 +26,7 @@ public class Receipt {
     @Column(name = "img_url", length = 1024)
     private String receiptImgUrl;
 
-    @OneToOne(mappedBy = "receipt")
+    @OneToOne(mappedBy = "receipt", cascade = CascadeType.ALL, orphanRemoval = true)
     private ReceiptDetails receiptDetails;
 
     @OneToMany(mappedBy = "receipt", cascade = CascadeType.ALL, orphanRemoval = true)

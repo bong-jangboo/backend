@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OcrResult {
@@ -30,10 +32,16 @@ public class OcrResult {
         private String confirmNum;
 
         public LocalDateTime getTransactionDateTime() {
-            String dateTimeString = date + " " + time;
-
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            return LocalDateTime.parse(dateTimeString, formatter);
+            String cleanedDate = date.replaceAll("\\(.*\\)", ""); // (일) 같은 요일 제거
+            String cleanedTime = time.replaceAll("\\s+", ""); // 모든 공백 제거
+            String dateTimeString = cleanedDate + " " + cleanedTime;
+            // 포맷 지정
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            try {
+                return LocalDateTime.parse(dateTimeString, formatter);
+            } catch (DateTimeParseException e) {
+                throw new IllegalArgumentException("Failed to parse date and time: " + dateTimeString, e);
+            }
         }
 
         public static PaymentInfoRes of(OcrJsonRes.PaymentInfo paymentInfo) {

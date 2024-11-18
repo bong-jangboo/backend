@@ -95,6 +95,8 @@ public class ReceiptOcrServiceImpl implements ReceiptOcrService {
         long endTime = System.currentTimeMillis(); // 종료 시간 기록
         long duration = endTime - startTime; // 응답 시간 계산
         log.info("OCR API response time: {} ms", duration); // 응답 시간 로그
+        log.debug("OCR API Response: {}", jsonText);
+        System.out.println("OCR API Response: " + jsonText);
 
         ObjectMapper mapper = new ObjectMapper();
         if (JsonPath.read(jsonText, "$.images[0].receipt") != null) {
