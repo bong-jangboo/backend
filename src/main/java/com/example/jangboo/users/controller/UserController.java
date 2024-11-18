@@ -1,6 +1,5 @@
 package com.example.jangboo.users.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +12,7 @@ import com.example.jangboo.users.controller.dto.response.UserInfoResponse;
 import com.example.jangboo.users.service.UserService;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/users")
 public class UserController {
 	private final UserService userService;
 
@@ -22,11 +21,10 @@ public class UserController {
 	}
 
 	@GetMapping("")
-	public ResponseEntity<ResultDto<UserInfoResponse>> getUser(
+	public ResponseEntity<ResultDto<UserInfoResponse>> getUserInfo(
 		@AuthenticationPrincipal CurrentUserInfo userInfo
 	) {
-		return ResponseEntity.ok(ResultDto.of(200,"사용자 정보가 조회되었습니다",userService.getUserInfo(userInfo.userId(),
+		return ResponseEntity.ok(ResultDto.of(200,"사용자가 조회되었습니다",userService.getUserInfo(userInfo.userId(),
 			userInfo.deptId())));
 	}
-
 }
