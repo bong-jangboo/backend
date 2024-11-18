@@ -91,10 +91,10 @@ public class UnivService {
 		String singupLink = "";
 		switch (orgType) {
 			case "DEPARTURE":
-				singupLink += String.format(pageUrl + "/pages/signup.html?&deptId=%d&role=%s", deptId, "STUDENT");
+				singupLink += String.format(pageUrl + "/pages/login&signup/signup.html?&deptId=%d&role=%s", deptId, "STUDENT");
 				break;
 			case "COLLEGE":
-				singupLink += String.format(pageUrl + "/pages/signup.html?&collegeId=%d&role=%s", deptId, "PRESIDENT");
+				singupLink += String.format(pageUrl + "/pages/login&signup/signup.html?&collegeId=%d&role=%s", deptId, "PRESIDENT");
 				break;
 		}
 		return singupLink;
