@@ -1,0 +1,61 @@
+package com.example.jangboo.receipt.service;
+
+
+import com.example.jangboo.receipt.controller.dto.ocr.OcrRes;
+import com.example.jangboo.receipt.controller.dto.response.ReceiptDto;
+import com.example.jangboo.receipt.controller.dto.response.ReceiptResponse;
+import com.example.jangboo.receipt.domain.Receipt;
+import com.example.jangboo.receipt.domain.ReceiptRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+public class ReceiptService {
+
+    private final ReceiptRepository receiptRepository;
+
+    public ReceiptResponse getReceipt(Long deptId, int page, int size, String sort, LocalDate fromDate, LocalDate toDate) {
+        Pageable pageable = PageRequest.of(page-1, size, Sort.by((sort.split(","))));
+        Page<Receipt> receiptPage;
+
+        if(fromDate != null && toDate != null) {
+
+            LocalDateTime from = fromDate.atStartOfDay();
+            LocalDateTime to = toDate.plusDays(1).atStartOfDay().minusNanos(1);
+            receiptPage = receiptRepository.findByDeptIdAndTransactionDateBetween(deptId, from, to, pageable);
+        } else {
+            receiptPage = receiptRepository.findByDeptId(deptId, pageable);
+        }
+
+        List<ReceiptDto> receiptDtoList = receiptPage.getContent().stream()
+                .map(ReceiptDto::from)
+                .collect(Collectors.toList());
+
+        return ReceiptResponse.builder()
+                .currentPage(receiptPage.getNumber()+1)
+                .pageSize(receiptPage.getSize())
+                .totalPages(receiptPage.getTotalPages())
+                .totalReceipts((int)receiptPage.getTotalElements())
+                .receipts(receiptDtoList)
+                .build();
+    }
+
+    @Transactional
+    public void saveOcrReceipt(Long deptId, String imgUrl,OcrRes.OcrResponse ocrResponse) {
+        Receipt receipt = Receipt.of(deptId,imgUrl,ocrResponse);
+        receiptRepository.save(receipt);
+    }
+
+
+}
