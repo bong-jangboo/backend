@@ -91,10 +91,10 @@ public class UnivService {
 		String singupLink = "";
 		switch (orgType) {
 			case "DEPARTURE":
-				singupLink += String.format(pageUrl + "/pages/signup.html?&deptId=%d&role=%s", deptId, "STUDENT");
+				singupLink += String.format(pageUrl + "/pages/login&signup/signup.html?&deptId=%d&role=%s", deptId, "STUDENT");
 				break;
 			case "COLLEGE":
-				singupLink += String.format(pageUrl + "/pages/signup.html?&collegeId=%d&role=%s", deptId, "PRESIDENT");
+				singupLink += String.format(pageUrl + "/pages/login&signup/signup.html?&collegeId=%d&role=%s", deptId, "PRESIDENT");
 				break;
 		}
 		return singupLink;
@@ -106,9 +106,10 @@ public class UnivService {
 
 	public UnivInfoResponse getParentInfo(Long childId) {
 		Univ child = univRepository.findById(childId).orElseThrow(() -> new IllegalArgumentException("Univ not found"));
-		Univ parent = child.getParent();
+		String parentName = Optional.ofNullable(child.getParent())
+			.map(Univ::getName)
+			.orElse(null);
 
-		return new UnivInfoResponse(parent.getName(),child.getName());
+		return new UnivInfoResponse(parentName, child.getName());
 	}
-
 }
