@@ -38,6 +38,7 @@ public class AccountBookRepositoryImpl implements AccountBookRepositoryCustom {
         List<AccountBook> results = queryFactory
                 .selectFrom(accountBook)
                 .where(builder)
+                .orderBy(accountBook.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
