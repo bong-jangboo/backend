@@ -38,4 +38,5 @@ out/
 
 ### Security ###
 src/main/resources/application-secret.yml
+src/main/resources/application-prod.yml
 src/main/resources/config/jwt.properties
