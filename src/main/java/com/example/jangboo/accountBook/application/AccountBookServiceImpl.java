@@ -1,13 +1,5 @@
 package com.example.jangboo.accountBook.application;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.example.jangboo.accountBook.domain.AccountBook;
 import com.example.jangboo.accountBook.domain.AccountBookSign;
 import com.example.jangboo.accountBook.domain.AccountBookStatus;
@@ -23,9 +15,17 @@ import com.example.jangboo.accountBook.infrastructure.AccountBookSignRepository;
 import com.example.jangboo.role.domain.Role;
 import com.example.jangboo.role.domain.RoleRepository;
 import com.example.jangboo.role.domain.RoleType;
-
+import com.example.jangboo.univ.domain.Univ;
+import com.example.jangboo.univ.domain.UnivRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -35,43 +35,44 @@ public class AccountBookServiceImpl implements AccountBookService {
     private final AccountBookRepository accountBookRepository;
     private final AccountBookSignRepository accountBookSignRepository;
     private final RoleRepository roleRepository;
+    private final UnivRepository univRepository;
 
     //장부 등록하기
     @Override
     @Transactional
     public void createAccountBook(CreateAccountBookRequestDto requestDto) {
 
-      // Role 엔티티에서 userId에 해당하는 Role을 가져옴
-      Role userRole = roleRepository.findByStudentId(requestDto.getUserId()).stream().findFirst()
-        .orElseThrow(() -> new IllegalArgumentException("역할을 찾을 수 없습니다."));
+        // Role 엔티티에서 userId에 해당하는 Role을 가져옴
+        Role userRole = roleRepository.findByStudentId(requestDto.getUserId()).stream().findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("역할을 찾을 수 없습니다."));
 
-      // RoleType이 MANAGER가 아닐 경우 예외 처리
-      if (userRole.getRole() != RoleType.MANAGER) {
-        throw new IllegalArgumentException("장부 등록은 총무(MANAGER)만 가능합니다.");
-      }
+        // RoleType이 MANAGER가 아닐 경우 예외 처리
+        if (userRole.getRole() != RoleType.MANAGER) {
+            throw new IllegalArgumentException("장부 등록은 총무(MANAGER)만 가능합니다.");
+        }
 
-      AccountBook accountBook = AccountBook.builder()
-        .receiptId(requestDto.getReceiptId())
-        .deptId(requestDto.getDeptId())
-        .transactionId(requestDto.getTransactionId())
-        .docNum(requestDto.getDocNum())
-        .createdAt(requestDto.getCreatedAt())
-        .title(requestDto.getTitle())
-        .content(requestDto.getContent())
-        .amount(requestDto.getAmount())
-        .status(AccountBookStatus.UNAUDITED)
-        .build();
+        AccountBook accountBook = AccountBook.builder()
+                .receiptId(requestDto.getReceiptId())
+                .deptId(requestDto.getDeptId())
+                .transactionId(requestDto.getTransactionId())
+                .docNum(requestDto.getDocNum())
+                .createdAt(requestDto.getCreatedAt())
+                .title(requestDto.getTitle())
+                .content(requestDto.getContent())
+                .amount(requestDto.getAmount())
+                .status(AccountBookStatus.UNAUDITED)
+                .build();
 
-      AccountBookSign accountBookSign = AccountBookSign.builder()
-        .presidentApproval(false)
-        .vicePresidentApproval(false)
-        .auditApproval(false)
-        .build();
+        AccountBookSign accountBookSign = AccountBookSign.builder()
+                .presidentApproval(false)
+                .vicePresidentApproval(false)
+                .auditApproval(false)
+                .build();
 
-      accountBook.setAccountBookSign(accountBookSign);
+        accountBook.setAccountBookSign(accountBookSign);
 
-      accountBookRepository.save(accountBook);
-      accountBookSignRepository.save(accountBookSign);
+        accountBookRepository.save(accountBook);
+        accountBookSignRepository.save(accountBookSign);
     }
 
     @Override
@@ -130,7 +131,7 @@ public class AccountBookServiceImpl implements AccountBookService {
         return AccountBookDetailResponseDto.fromEntity(accountBook);
     }
 
-    //승인 해야할 장부 조회
+    // 승인해야할 장부 조회
     @Override
     @Transactional(readOnly = true)
     public List<ApproveAccountBookListResponseDto> getApproveAccountBookList(
@@ -146,17 +147,20 @@ public class AccountBookServiceImpl implements AccountBookService {
         List<AccountBook> accountBooks;
 
         if (roleType == RoleType.VICE_PRESIDENT) {
-            //장부 상태가 미감사인 것 중 부회장 승인이 안 된 것
-            accountBooks = accountBookRepository.findByStatusAndAccountBookSign_VicePresidentApprovalFalse(
-                    AccountBookStatus.UNAUDITED);
+            // 부회장: 학과에 맞는 미감사 장부 중 부회장 승인이 안 된 것
+            accountBooks = accountBookRepository.findByStatusAndDeptIdAndAccountBookSign_VicePresidentApprovalFalse(
+                    AccountBookStatus.UNAUDITED, requestDto.getDeptId());
         } else if (roleType == RoleType.PRESIDENT) {
-            //장부 상태가 미감사인 것 중 부회장 승인은 됐고 회장 승인은 안 된 것
-            accountBooks = accountBookRepository.findByStatusAndAccountBookSign_VicePresidentApprovalTrueAndAccountBookSign_PresidentApprovalFalse(
-                    AccountBookStatus.UNAUDITED);
+            // 회장: 학과에 맞는 미감사 장부 중 부회장 승인 됐고 회장 승인이 안 된 것
+            accountBooks = accountBookRepository.findByStatusAndDeptIdAndAccountBookSign_VicePresidentApprovalTrueAndAccountBookSign_PresidentApprovalFalse(
+                    AccountBookStatus.UNAUDITED, requestDto.getDeptId());
         } else if (roleType == RoleType.AUDITOR) {
-            //장부 상태가 미감사인 것 중 부회장, 회장 승인은 됐고 감사 승인은 안 된 것
-            accountBooks = accountBookRepository.findByStatusAndAccountBookSign_PresidentApprovalTrueAndAccountBookSign_VicePresidentApprovalTrueAndAccountBookSign_AuditApprovalFalse(
-                    AccountBookStatus.UNAUDITED);
+            // 감사: 단과대 소속 모든 학과의 미감사 장부 중 부회장, 회장 승인 됐고 감사 승인이 안 된 것
+            List<Long> childDeptIds = univRepository.findByParentId(requestDto.getDeptId()).stream()
+                    .map(Univ::getId)
+                    .toList();
+            accountBooks = accountBookRepository.findByStatusAndDeptIdInAndAccountBookSign_PresidentApprovalTrueAndAccountBookSign_VicePresidentApprovalTrueAndAccountBookSign_AuditApprovalFalse(
+                    AccountBookStatus.UNAUDITED, childDeptIds);
         } else {
             throw new IllegalArgumentException("승인 권한이 없는 역할입니다.");
         }
@@ -165,6 +169,7 @@ public class AccountBookServiceImpl implements AccountBookService {
                 .map(ApproveAccountBookListResponseDto::fromEntity)
                 .toList();
     }
+
 
     // 장부 승인 및 반려하기
     @Override
