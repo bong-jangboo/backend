@@ -48,9 +48,6 @@ public class OpenBankingClient {
 	@Value("${oauth.open-banking.uri.user_info-uri}")
 	private String userInfoUri;
 
-	@Value("${mock.uri}")
-	private String mockUri;
-
 	private final RestTemplate restTemplate;
 
 	@Autowired
@@ -161,7 +158,7 @@ public class OpenBankingClient {
 	}
 
 	public ResponseEntity<MockTransactionResponse> getMockTransactions(TransactionRequest request) {
-		String accountInfoUrl = mockUri;
+		String accountInfoUrl = "https://bong-jangboo.com/transactions";
 
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(accountInfoUrl)
 			.queryParam("account_id", request.fintechUseNum())

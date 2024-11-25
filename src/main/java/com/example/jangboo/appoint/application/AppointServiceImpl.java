@@ -9,6 +9,7 @@ import com.example.jangboo.users.domain.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -22,6 +23,7 @@ public class AppointServiceImpl implements AppointService {
     private final UserRepository userRepository;
 
     @Override
+    @Transactional
     public void appointVicePresidentOrManager(AppointRequestDto requestDto, Long userId) {
         // userId로 현재 사용자의 모든 역할 조회
         List<Role> userRoles = roleRepository.findByStudentId(userId);
@@ -54,8 +56,10 @@ public class AppointServiceImpl implements AppointService {
             throw new IllegalArgumentException("해당 사용자는 이미 " + newRoleType + " 역할을 가지고 있습니다.");
         });
 
+
         // 모든 기존 역할의 endDate를 현재 날짜로 설정
-        userRoles.forEach(role -> {
+        List<Role> appointedRoles = roleRepository.findByStudentId(user.getId());
+        appointedRoles.forEach(role -> {
             role.setEndDate(LocalDate.now()); // endDate를 현재 날짜로 설정
             roleRepository.save(role); // 업데이트된 role 저장
         });

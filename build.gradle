@@ -83,6 +83,9 @@ test {
 }
 
 asciidoctor.doFirst {
+    if (!file(snippetsDir).exists()) {
+        file(snippetsDir).mkdirs() // 디렉토리 강제 생성
+    }
     delete file("src/main/resources/static/docs")
 }
 

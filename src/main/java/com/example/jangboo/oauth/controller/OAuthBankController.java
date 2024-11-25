@@ -1,6 +1,7 @@
 package com.example.jangboo.oauth.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +25,9 @@ import jakarta.servlet.http.HttpServletResponse;
 public class OAuthBankController {
 	private final OAuthBankService oAuthBankService;
 	private final AuthService authService;
+
+	@Value("${jangboo.front_end.url}")
+	private String frontEndUrl;
 
 	@Autowired
 	public OAuthBankController(OAuthBankService oAuthBankService, AuthService authService) {
@@ -55,7 +59,7 @@ public class OAuthBankController {
 		response.addCookie(jwtCookie);
 
 		RedirectView redirectView = new RedirectView();
-		redirectView.setUrl("http://localhost:5500/");
+		redirectView.setUrl(frontEndUrl);
 		return redirectView;
 	}
 
