@@ -52,7 +52,7 @@ public class UserService {
 	}
 
 	public UserInfoResponse getUserInfo(Long userId, Long deptId) {
-		User user = userRepository.findById(userId).orElseThrow(() -> new IllegalStateException("잔액을 가져오지 못했습니다."));
+		User user = userRepository.findById(userId).orElseThrow(() -> new IllegalStateException("유저정보를 가져오지 못했습니다."));
 		UnivInfoResponse univInfo = univService.getParentInfo(deptId);
 		RoleType role = roleService.getCurrentRole(userId);
 
@@ -63,6 +63,20 @@ public class UserService {
 			.role(role.toString())
 			.number(user.getNumber())
 			.build();
+	}
+
+	public Void registerPayedInfo(Long userId) {
+		User user = userRepository.findById(userId).orElseThrow(() -> new IllegalStateException("유저정보를 가져오지 못했습니다."));
+		user.updatePayedInfo();
+		userRepository.save(user);
+
+		return null;
+	}
+
+	public Boolean getIsPayed(Long userId) {
+		User user = userRepository.findById(userId).orElseThrow(() -> new IllegalStateException("유저정보를 가져오지 못했습니다."));
+
+		return user.getIsPayed();
 	}
 
 }

@@ -41,6 +41,10 @@ public class User {
 	@Column(name="number")
 	private String number;
 
+	@Getter
+	@Column(nullable = true)
+	private Boolean isPayed;
+
 	@Builder
 	public User(Long deptId, String name, String loginId, String password, String number) {
 		this.name = name;
@@ -48,5 +52,10 @@ public class User {
 		this.loginId = loginId;
 		this.password = password;
 		this.number = number;
+		this.isPayed=false;
+	}
+
+	public void updatePayedInfo(){
+		this.isPayed = true;
 	}
 }

@@ -3,6 +3,7 @@ package com.example.jangboo.users.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,4 +28,19 @@ public class UserController {
 		return ResponseEntity.ok(ResultDto.of(200,"사용자가 조회되었습니다",userService.getUserInfo(userInfo.userId(),
 			userInfo.deptId())));
 	}
+
+	@PostMapping("/update-payed-info")
+	public ResponseEntity<ResultDto<Void>> updatePayedInfo(
+		@AuthenticationPrincipal CurrentUserInfo userInfo
+	) {
+		return ResponseEntity.ok(ResultDto.of(200,"사용자가 조회되었습니다",userService.registerPayedInfo(userInfo.userId())));
+	}
+
+	@GetMapping ("/get-is-payed")
+	public ResponseEntity<ResultDto<Boolean>> getIsPayed(
+		@AuthenticationPrincipal CurrentUserInfo userInfo
+	) {
+		return ResponseEntity.ok(ResultDto.of(200,"사용자가 조회되었습니다",userService.getIsPayed(userInfo.userId())));
+	}
+
 }
