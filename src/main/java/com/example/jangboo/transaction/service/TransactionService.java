@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -53,7 +54,7 @@ public class TransactionService {
 				.time((LocalTime)parseDateTime(t.time(),"HH:mm:ss"))
 				.description(t.description())
 				.balance(t.balance())
-				.lable(t.lable())
+				.lable(t.label())
 				.accountOwnerId(userId)
 				.deptId(deptId)
 				.build()
@@ -106,5 +107,13 @@ public class TransactionService {
 
 	private Pageable getPageable(int pageNo, int pageSize) {
 		return PageRequest.of(pageNo, pageSize);
+	}
+
+	@Transactional
+	public TransactionsResponse getPayedInfo(String name,Long deptId){
+		List<Transaction> transactions = transactionRepository.findByDescriptionContainingAndLableAndDeptIdAndAmount(name,"입금",deptId,"233000.0");
+		return new TransactionsResponse(
+			transactions.stream().map(TransactionInfo::from).toList()
+		);
 	}
 }

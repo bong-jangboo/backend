@@ -15,4 +15,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 	Optional<Transaction> findTopByDeptIdOrderByDateDescTimeDesc(Long deptId);
 	List<Transaction> findTop5ByDeptIdOrderByDateDescTimeDesc(Long deptId);
 	Page<Transaction> findByDeptIdAndDateBetween(Long deptId, LocalDate startDate, LocalDate endDate, Pageable pageable);
+	List<Transaction> findByDescriptionContainingAndLableAndDeptIdAndAmount(String name,String lable,Long deptId,String amount);
+
 }
