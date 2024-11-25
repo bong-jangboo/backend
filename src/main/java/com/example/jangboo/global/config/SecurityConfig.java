@@ -30,7 +30,7 @@ public class SecurityConfig{
 			.csrf(csrf -> csrf.disable())// CSRF 보호 비활성화
 			.authorizeHttpRequests(auth -> auth
 				.requestMatchers("/**").permitAll()
-				.requestMatchers("/api/univ/register/**","api/auth/login","/api/oauth/**","/api/role/main","/api/account/**").permitAll()
+				.requestMatchers("/api/univ/register/**","api/auth/login","/api/oauth/**","/api/role/main","/api/account/**","/api/transaction/**").permitAll()
 				.requestMatchers("/api/univ/signup-link").hasAnyRole("AUDITOR","PRESIDENT")
 				.anyRequest().authenticated()  // 그 외 모든 요청은 인증 필요
 			)

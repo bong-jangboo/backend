@@ -1,7 +1,7 @@
 package com.example.jangboo.oauth.client.response.info;
 
 public record MockTransactionInfo(
-	String lable,
+	String label,
 	String amount,
 	String transaction_type,
 	String balance,
