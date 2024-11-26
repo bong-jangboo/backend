@@ -4,5 +4,7 @@ public enum ReceiptStatus {
     PEDING,
     PROCESSING,
     PROCESSED,
-    FAILED
+    FAILED,
+    INCOMPLETE,
+    COMPLETE
 }
