@@ -6,6 +6,7 @@ import com.example.jangboo.receipt.controller.dto.response.ReceiptDto;
 import com.example.jangboo.receipt.controller.dto.response.ReceiptResponse;
 import com.example.jangboo.receipt.domain.Receipt;
 import com.example.jangboo.receipt.domain.ReceiptRepository;
+import com.example.jangboo.receipt.domain.ReceiptStatus;
 import com.example.jangboo.receipt.event.ReceiptDetailsSavedEvent;
 
 import lombok.RequiredArgsConstructor;
@@ -61,6 +62,11 @@ public class ReceiptService {
         Receipt receipt = Receipt.of(deptId,imgUrl,ocrResponse);
         Receipt savedReceipt = receiptRepository.save(receipt);
 
-        eventPublisher.publishEvent(new ReceiptDetailsSavedEvent(savedReceipt.getId()));
+        if(receipt.getReceiptDetails().isComplete()){
+            savedReceipt.markAsStatus(ReceiptStatus.COMPLETE);
+            eventPublisher.publishEvent(new ReceiptDetailsSavedEvent(savedReceipt.getId()));
+        } else {
+            savedReceipt.markAsStatus(ReceiptStatus.INCOMPLETE);
+        }
     }
 }

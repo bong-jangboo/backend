@@ -71,12 +71,9 @@ public class Receipt {
         this.receiptStatus = ReceiptStatus.PROCESSED;
     }
 
-    public void markAsProcessing() {
-        this.receiptStatus = ReceiptStatus.PROCESSING;
+    public void markAsStatus(ReceiptStatus status){
+        this.receiptStatus = status;
     }
 
-    public void markAsFailed() {
-        this.receiptStatus = ReceiptStatus.FAILED;
-    }
 
 }
