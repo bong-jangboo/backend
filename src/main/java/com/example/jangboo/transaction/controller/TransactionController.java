@@ -58,4 +58,13 @@ public class TransactionController {
 	) {
 		return ResponseEntity.ok(ResultDto.of(200, "거래내역 목록이 조회되었습니다",transactionService.getPayedInfo(name,userInfo.deptId())));
 	}
+
+	@GetMapping("/notWrited/{pageNum}")
+	public ResponseEntity<ResultDto<TransactionPageResponse>> getNotWrittenTransactions(
+		@AuthenticationPrincipal CurrentUserInfo userInfo,
+		@PathVariable int pageNum
+	) {
+		return ResponseEntity.ok(ResultDto.of(200, "거래내역 목록이 조회되었습니다",transactionService.getNonWriteTransactions(
+			userInfo.deptId(),pageNum)));
+	}
 }

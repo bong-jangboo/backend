@@ -5,6 +5,7 @@ import com.example.jangboo.accountBook.domain.AccountBookStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AccountBookRepository extends JpaRepository<AccountBook, Long>, AccountBookRepositoryCustom {
 
@@ -13,4 +14,6 @@ public interface AccountBookRepository extends JpaRepository<AccountBook, Long>,
     List<AccountBook> findByStatusAndDeptIdAndAccountBookSign_VicePresidentApprovalTrueAndAccountBookSign_PresidentApprovalFalse(AccountBookStatus status, Long deptId);
 
     List<AccountBook> findByStatusAndDeptIdInAndAccountBookSign_PresidentApprovalTrueAndAccountBookSign_VicePresidentApprovalTrueAndAccountBookSign_AuditApprovalFalse(AccountBookStatus status, List<Long> deptIds);
+
+    Optional<AccountBook> findByTransactionId(Long transactionId);
 }

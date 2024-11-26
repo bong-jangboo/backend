@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.jangboo.accountBook.application.AccountBookService;
 import com.example.jangboo.oauth.client.response.MockTransactionResponse;
 import com.example.jangboo.receipt.service.dto.response.ReceiptInfoResponse;
 import com.example.jangboo.transaction.controller.dto.request.TransactionByDateRequest;
@@ -27,11 +28,13 @@ import com.example.jangboo.transaction.domain.repository.TransactionRepository;
 @Service
 public class TransactionService {
 	private final TransactionRepository transactionRepository;
+	private final AccountBookService accountBookService;
 
 	public static final int PAGE_SIZE = 10;
 
-	public TransactionService(TransactionRepository transactionRepository) {
+	public TransactionService(TransactionRepository transactionRepository, AccountBookService accountBookService) {
 		this.transactionRepository = transactionRepository;
+		this.accountBookService = accountBookService;
 	}
 
 	public LocalDateTime findLatestUpdatedTransactionDateTime(Long deptId) {
@@ -134,5 +137,21 @@ public class TransactionService {
 				.orElseThrow(() -> new IllegalStateException("잔액을 가져오지 못했습니다.")));
 
 		return transaction.get();
+	}
+
+	@Transactional(readOnly = true)
+	public TransactionPageResponse getNonWriteTransactions(Long deptId, int pageNo) {
+		Page<Transaction> transactions = transactionRepository.findByDeptIdAndReceiptIdIsNotNull(deptId, getPageable(pageNo, PAGE_SIZE));
+
+		List<TransactionInfo> filteredTransactions = transactions.getContent().stream()
+			.filter(transaction -> accountBookService.isTransactionNotExists(transaction.getId()))
+			.map(TransactionInfo::from)
+			.toList();
+
+		return new TransactionPageResponse(
+			filteredTransactions,
+			transactions.getNumber(),
+			transactions.getTotalPages()
+		);
 	}
 }

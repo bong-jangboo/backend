@@ -222,4 +222,9 @@ public class AccountBookServiceImpl implements AccountBookService {
         accountBookSignRepository.save(accountBookSign);
         accountBookRepository.save(accountBook);
     }
+
+    @Override
+    public boolean isTransactionNotExists(Long transactionId){
+        return accountBookRepository.findByTransactionId(transactionId).isEmpty();
+    }
 }
