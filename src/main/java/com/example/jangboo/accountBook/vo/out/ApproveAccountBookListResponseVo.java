@@ -18,4 +18,5 @@ public class ApproveAccountBookListResponseVo {
     private Long amount;
     @JsonFormat(shape=JsonFormat.Shape.STRING)
     private AccountBookStatus status;
+    private Long deptId;
 }
