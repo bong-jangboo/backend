@@ -6,7 +6,11 @@ import com.example.jangboo.receipt.controller.dto.response.ReceiptDto;
 import com.example.jangboo.receipt.controller.dto.response.ReceiptResponse;
 import com.example.jangboo.receipt.domain.Receipt;
 import com.example.jangboo.receipt.domain.ReceiptRepository;
+import com.example.jangboo.receipt.event.ReceiptDetailsSavedEvent;
+
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +28,7 @@ import java.util.stream.Collectors;
 public class ReceiptService {
 
     private final ReceiptRepository receiptRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     public ReceiptResponse getReceipt(Long deptId, int page, int size, String sort, LocalDate fromDate, LocalDate toDate) {
         Pageable pageable = PageRequest.of(page-1, size, Sort.by((sort.split(","))));
@@ -54,8 +59,8 @@ public class ReceiptService {
     @Transactional
     public void saveOcrReceipt(Long deptId, String imgUrl,OcrRes.OcrResponse ocrResponse) {
         Receipt receipt = Receipt.of(deptId,imgUrl,ocrResponse);
-        receiptRepository.save(receipt);
+        Receipt savedReceipt = receiptRepository.save(receipt);
+
+        eventPublisher.publishEvent(new ReceiptDetailsSavedEvent(savedReceipt.getId()));
     }
-
-
 }
