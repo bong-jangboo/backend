@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.jangboo.auth.controller.dto.Info.CurrentUserInfo;
 import com.example.jangboo.univ.controller.dto.request.RegisterRequest;
 import com.example.jangboo.global.dto.ResultDto;
+import com.example.jangboo.univ.controller.dto.response.UnivInfoResponse;
 import com.example.jangboo.univ.service.UnivService;
 
 @RestController
@@ -43,5 +44,14 @@ public class UnivController {
 	){
 		return ResponseEntity.ok(ResultDto.of(
 			200,"가입링크가 성공적으로 반환되었습니다.", univService.getSignUpLink(userInfo.deptId())));
+	}
+
+	@GetMapping("/")
+	public ResponseEntity<ResultDto<UnivInfoResponse>> getUnivInfo(
+		@AuthenticationPrincipal CurrentUserInfo userInfo,
+		@RequestParam Long deptId
+	){
+		return ResponseEntity.ok(ResultDto.of(
+			200,"학과정보가 성공적으로 반환되었습니다.", univService.getParentInfo(deptId)));
 	}
 }

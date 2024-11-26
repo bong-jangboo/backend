@@ -16,6 +16,7 @@ public class ApproveAccountBookListResponseDto {
     private String title;
     private Long amount;
     private AccountBookStatus status;
+    private Long deptId;
 
     public static ApproveAccountBookListResponseDto fromEntity(AccountBook accountBook) {
         return ApproveAccountBookListResponseDto.builder()
@@ -25,6 +26,7 @@ public class ApproveAccountBookListResponseDto {
                 .title(accountBook.getTitle())
                 .amount(accountBook.getAmount())
                 .status(accountBook.getStatus())
+                .deptId(accountBook.getDeptId())
                 .build();
     }
 
@@ -36,6 +38,7 @@ public class ApproveAccountBookListResponseDto {
                 .title(title)
                 .amount(amount)
                 .status(status)
+                .deptId(deptId)
                 .build();
     }
 }
