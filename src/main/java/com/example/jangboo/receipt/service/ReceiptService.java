@@ -20,6 +20,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationAdapter;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -66,10 +68,18 @@ public class ReceiptService {
 
         if(receipt.getReceiptDetails().isComplete()){
             savedReceipt.markAsStatus(ReceiptStatus.COMPLETE);
-            eventPublisher.publishEvent(new ReceiptDetailsSavedEvent(savedReceipt.getId()));
         } else {
             savedReceipt.markAsStatus(ReceiptStatus.INCOMPLETE);
         }
+
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
+            @Override
+            public void afterCommit() {
+                if (receipt.getReceiptDetails().isComplete()) {
+                    eventPublisher.publishEvent(new ReceiptDetailsSavedEvent(savedReceipt.getId()));
+                }
+            }
+        });
     }
 
     public ReceiptInfoResponse getReceiptInfo(Long receiptId){

@@ -52,7 +52,7 @@ public class ReceiptDetails {
 
     // ReceiptDetails 검증 로직
     public boolean isComplete() {
-        return appcode != null && store != null && amount != null && transactionDate != null;
+        return amount != null && transactionDate != null;
     }
 
     public void linkReceipt(Receipt receipt) {

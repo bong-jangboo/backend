@@ -22,6 +22,7 @@ public class TransactionReceiptEventListener {
 	@EventListener
 	@Async
 	public void handleReceiptDetailSavedEvent(ReceiptDetailsSavedEvent event){
+		System.out.println("receiptUploadedEvent:"+event.getReceiptId().toString());
 		ReceiptInfoResponse response = receiptService.getReceiptInfo(event.getReceiptId());
 		transactionService.updateReceiptId(response);
 	}
