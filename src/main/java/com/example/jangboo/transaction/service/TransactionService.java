@@ -55,6 +55,10 @@ public class TransactionService {
 		return LocalDateTime.of(LocalDate.now().withDayOfYear(1), LocalTime.MIDNIGHT); // 1월 1일 00:00:00
 	}
 
+
+
+
+
 	@Transactional
 	public void saveTransactions (MockTransactionResponse transaction,Long userId,Long deptId){
 		List<Transaction> transactions = transaction.transactions().stream()
@@ -150,6 +154,7 @@ public class TransactionService {
 	public TransactionPageResponse getNonWriteTransactions(Long deptId, int pageNo) {
 		Page<Transaction> transactions = transactionRepository.findByDeptIdAndReceiptIdIsNotNull(deptId, getPageable(pageNo, PAGE_SIZE));
 
+		System.out.println(transactions.getContent().size());
 		List<TransactionInfo> filteredTransactions = transactions.getContent().stream()
 			.filter(transaction -> accountBookService.isTransactionNotExists(transaction.getId()))
 			.map(TransactionInfo::from)
