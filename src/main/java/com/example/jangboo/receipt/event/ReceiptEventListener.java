@@ -1,6 +1,7 @@
 package com.example.jangboo.receipt.event;
 
 import com.example.jangboo.file.event.ReceiptUploadedEvent;
+import com.example.jangboo.global.error.CustomException;
 import com.example.jangboo.receipt.controller.dto.ocr.OcrRes;
 import com.example.jangboo.receipt.service.ReceiptService;
 import com.example.jangboo.receipt.service.impl.ReceiptOcrServiceImpl;
@@ -19,7 +20,13 @@ public class ReceiptEventListener {
     @EventListener
     @Async
     public void handleReceiptUploadedEvent(ReceiptUploadedEvent event){
-        OcrRes.OcrResponse ocrResponse = receiptOcrService.ocrStart(event.getFileUrl());
+        OcrRes.OcrResponse ocrResponse;
+        try {
+            ocrResponse = receiptOcrService.ocrStart(event.getFileUrl());
+        } catch (CustomException e) {
+            ocrResponse = OcrRes.OcrResponse.empty(); // Ocr 실패시 기본값
+        }
         receiptService.saveOcrReceipt(event.getDeptId(), event.getFileUrl(), ocrResponse);
+
     }
 }

@@ -27,5 +27,14 @@ public class OcrRes {
                     result.getTotalPrice().getPrice().getText().replaceAll(",", "")
             );
         }
+
+        public static OcrResponse empty() {
+            return new OcrResponse(
+                    null,
+                    null,
+                    List.of(),
+                    "0"
+            );
+        }
     }
 }
