@@ -15,6 +15,7 @@ import com.example.jangboo.accountBook.infrastructure.AccountBookSignRepository;
 import com.example.jangboo.role.domain.Role;
 import com.example.jangboo.role.domain.RoleRepository;
 import com.example.jangboo.role.domain.RoleType;
+import com.example.jangboo.role.service.RoleService;
 import com.example.jangboo.univ.domain.Univ;
 import com.example.jangboo.univ.domain.UnivRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,18 +37,17 @@ public class AccountBookServiceImpl implements AccountBookService {
     private final AccountBookSignRepository accountBookSignRepository;
     private final RoleRepository roleRepository;
     private final UnivRepository univRepository;
+    private final RoleService roleService;
 
     //장부 등록하기
     @Override
     @Transactional
     public void createAccountBook(CreateAccountBookRequestDto requestDto) {
 
-        // Role 엔티티에서 userId에 해당하는 Role을 가져옴
-        Role userRole = roleRepository.findByStudentId(requestDto.getUserId()).stream().findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("역할을 찾을 수 없습니다."));
 
+        RoleType userRole = roleService.getCurrentRole(requestDto.getUserId());
         // RoleType이 MANAGER가 아닐 경우 예외 처리
-        if (userRole.getRole() != RoleType.MANAGER) {
+        if (userRole != RoleType.MANAGER) {
             throw new IllegalArgumentException("장부 등록은 총무(MANAGER)만 가능합니다.");
         }
 
@@ -137,12 +137,7 @@ public class AccountBookServiceImpl implements AccountBookService {
     public List<ApproveAccountBookListResponseDto> getApproveAccountBookList(
             ApproveAccountBookListRequestDto requestDto) {
 
-        List<Role> roles = roleRepository.findByStudentId(requestDto.getUserId());
-
-        RoleType roleType = roles.stream()
-                .map(Role::getRole)
-                .findFirst()  // RoleType은 여러 개? 최상위 하나만?
-                .orElseThrow(() -> new IllegalArgumentException("역할이 존재하지 않음"));
+        RoleType roleType = roleService.getCurrentRole(requestDto.getUserId());
 
         List<AccountBook> accountBooks;
 
@@ -184,11 +179,7 @@ public class AccountBookServiceImpl implements AccountBookService {
         AccountBookSign accountBookSign = accountBook.getAccountBookSign();
 
         // 역할 찾기
-        RoleType roleType = roleRepository.findByStudentId(requestDto.getUserId())
-                .stream()
-                .map(Role::getRole)
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("역할이 존재하지 않음"));
+        RoleType roleType = roleService.getCurrentRole(requestDto.getUserId());
 
         // 승인 여부 업데이트
         if (roleType == RoleType.VICE_PRESIDENT) {
