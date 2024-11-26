@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.jangboo.oauth.client.response.MockTransactionResponse;
+import com.example.jangboo.receipt.service.dto.response.ReceiptInfoResponse;
 import com.example.jangboo.transaction.controller.dto.request.TransactionByDateRequest;
 import com.example.jangboo.transaction.controller.dto.response.Info.TransactionInfo;
 import com.example.jangboo.transaction.controller.dto.response.TransactionPageResponse;
@@ -115,5 +116,23 @@ public class TransactionService {
 		return new TransactionsResponse(
 			transactions.stream().map(TransactionInfo::from).toList()
 		);
+	}
+
+	@Transactional
+	public void updateReceiptId(ReceiptInfoResponse response){
+		Transaction transaction = matchTransaction(response);
+		transaction.updateReceipt(response.id());
+	}
+
+	private Transaction matchTransaction(ReceiptInfoResponse receipt){
+		LocalDate localDate = receipt.transactionDate().toLocalDate();
+		LocalTime localTime = receipt.transactionDate().toLocalTime();
+		String amount = "-"+receipt.amount()+".0";
+
+		Optional<Transaction> transaction = Optional.ofNullable(
+			transactionRepository.findByAmountAndDateAndTime(amount, localDate, localTime)
+				.orElseThrow(() -> new IllegalStateException("잔액을 가져오지 못했습니다.")));
+
+		return transaction.get();
 	}
 }

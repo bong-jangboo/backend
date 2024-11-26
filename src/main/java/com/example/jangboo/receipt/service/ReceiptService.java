@@ -5,9 +5,11 @@ import com.example.jangboo.receipt.controller.dto.ocr.OcrRes;
 import com.example.jangboo.receipt.controller.dto.response.ReceiptDto;
 import com.example.jangboo.receipt.controller.dto.response.ReceiptResponse;
 import com.example.jangboo.receipt.domain.Receipt;
+import com.example.jangboo.receipt.domain.ReceiptDetails;
 import com.example.jangboo.receipt.domain.ReceiptRepository;
 import com.example.jangboo.receipt.domain.ReceiptStatus;
 import com.example.jangboo.receipt.event.ReceiptDetailsSavedEvent;
+import com.example.jangboo.receipt.service.dto.response.ReceiptInfoResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -68,5 +70,12 @@ public class ReceiptService {
         } else {
             savedReceipt.markAsStatus(ReceiptStatus.INCOMPLETE);
         }
+    }
+
+    public ReceiptInfoResponse getReceiptInfo(Long receiptId){
+        Receipt receipt = receiptRepository.findById(receiptId).orElseThrow(() -> new IllegalStateException("영수증을 가져오지 못했습니다."));
+        ReceiptDetails receiptDetails = receipt.getReceiptDetails();
+
+        return new ReceiptInfoResponse(receiptId,receiptDetails.getAmount(),receiptDetails.getTransactionDate());
     }
 }
