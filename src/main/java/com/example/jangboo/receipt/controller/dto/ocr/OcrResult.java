@@ -42,16 +42,26 @@ public class OcrResult {
                 return null;
             }
 
-            String cleanedDate = date.replaceAll("\\(.*\\)", ""); // (일) 같은 요일 제거
+            String cleanedDate = date.replaceAll("[\\[\\(].*?[\\]\\)]", "").replaceAll("/", "-");
             String cleanedTime = time.replaceAll("\\s+", ""); // 모든 공백 제거
             String dateTimeString = cleanedDate + " " + cleanedTime;
-            // 포맷 지정
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-            try {
-                return LocalDateTime.parse(dateTimeString, formatter);
-            } catch (DateTimeParseException e) {
-                throw new IllegalArgumentException("Failed to parse date and time: " + dateTimeString, e);
+
+            // 두 가지 포맷 시도: 초가 있는 경우와 없는 경우
+            List<DateTimeFormatter> formatters = List.of(
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"), // 초 있는 포맷
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")    // 초 없는 포맷
+            );
+
+            for (DateTimeFormatter formatter : formatters) {
+                try {
+                    return LocalDateTime.parse(dateTimeString, formatter);
+                } catch (DateTimeParseException ignored) {
+                    // 포맷이 맞지 않으면 다음 포맷 시도
+                }
             }
+
+            // 모든 포맷 시도 실패 시 예외 발생
+            throw new IllegalArgumentException("Failed to parse date and time: " + dateTimeString);
         }
 
         public static PaymentInfoRes of(OcrJsonRes.PaymentInfo paymentInfo) {
