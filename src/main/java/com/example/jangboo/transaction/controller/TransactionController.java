@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.jangboo.auth.controller.dto.Info.CurrentUserInfo;
 import com.example.jangboo.global.dto.ResultDto;
+import com.example.jangboo.transaction.controller.dto.response.TransactionDetailResponse;
 import com.example.jangboo.transaction.controller.dto.response.TransactionPageResponse;
 import com.example.jangboo.transaction.controller.dto.response.TransactionsResponse;
 import com.example.jangboo.transaction.service.TransactionService;
@@ -66,5 +67,13 @@ public class TransactionController {
 	) {
 		return ResponseEntity.ok(ResultDto.of(200, "거래내역 목록이 조회되었습니다",transactionService.getNonWriteTransactions(
 			userInfo.deptId(),pageNum)));
+	}
+
+	@GetMapping("/detail")
+	public ResponseEntity<ResultDto<TransactionDetailResponse>> getDetailTransaction(
+		@AuthenticationPrincipal CurrentUserInfo userInfo,
+		@RequestParam Long transactionId
+	) {
+		return ResponseEntity.ok(ResultDto.of(200, "거래내역 목록이 조회되었습니다",transactionService.getDetailTransaction(transactionId)));
 	}
 }

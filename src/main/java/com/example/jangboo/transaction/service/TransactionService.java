@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -17,9 +18,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.jangboo.accountBook.application.AccountBookService;
 import com.example.jangboo.oauth.client.response.MockTransactionResponse;
+import com.example.jangboo.receipt.service.ReceiptService;
 import com.example.jangboo.receipt.service.dto.response.ReceiptInfoResponse;
+import com.example.jangboo.receipt.service.dto.response.ReceiptUrlAndIdResponse;
 import com.example.jangboo.transaction.controller.dto.request.TransactionByDateRequest;
 import com.example.jangboo.transaction.controller.dto.response.Info.TransactionInfo;
+import com.example.jangboo.transaction.controller.dto.response.TransactionDetailResponse;
 import com.example.jangboo.transaction.controller.dto.response.TransactionPageResponse;
 import com.example.jangboo.transaction.controller.dto.response.TransactionsResponse;
 import com.example.jangboo.transaction.domain.Transaction;
@@ -31,10 +35,13 @@ public class TransactionService {
 	private final AccountBookService accountBookService;
 
 	public static final int PAGE_SIZE = 10;
+	private final ReceiptService receiptService;
 
-	public TransactionService(TransactionRepository transactionRepository, AccountBookService accountBookService) {
+	public TransactionService(TransactionRepository transactionRepository, AccountBookService accountBookService,
+		ReceiptService receiptService) {
 		this.transactionRepository = transactionRepository;
 		this.accountBookService = accountBookService;
+		this.receiptService = receiptService;
 	}
 
 	public LocalDateTime findLatestUpdatedTransactionDateTime(Long deptId) {
@@ -153,5 +160,13 @@ public class TransactionService {
 			transactions.getNumber(),
 			transactions.getTotalPages()
 		);
+	}
+
+	@Transactional(readOnly = true)
+	public TransactionDetailResponse getDetailTransaction(Long transactionId){
+		Transaction transaction = transactionRepository.findById(transactionId).orElse(null);
+		ReceiptUrlAndIdResponse receipt = receiptService.getReceiptUrlAndId(transaction.getReceiptId());
+
+		return new TransactionDetailResponse(TransactionInfo.from(transaction),receipt.url(),receipt.id());
 	}
 }
