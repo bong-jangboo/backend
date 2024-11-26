@@ -5,9 +5,11 @@ import com.example.jangboo.receipt.controller.dto.ocr.OcrRes;
 import com.example.jangboo.receipt.controller.dto.response.ReceiptDto;
 import com.example.jangboo.receipt.controller.dto.response.ReceiptResponse;
 import com.example.jangboo.receipt.domain.Receipt;
+import com.example.jangboo.receipt.domain.ReceiptDetails;
 import com.example.jangboo.receipt.domain.ReceiptRepository;
 import com.example.jangboo.receipt.domain.ReceiptStatus;
 import com.example.jangboo.receipt.event.ReceiptDetailsSavedEvent;
+import com.example.jangboo.receipt.service.dto.response.ReceiptInfoResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,6 +20,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationAdapter;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -64,9 +68,24 @@ public class ReceiptService {
 
         if(receipt.getReceiptDetails().isComplete()){
             savedReceipt.markAsStatus(ReceiptStatus.COMPLETE);
-            eventPublisher.publishEvent(new ReceiptDetailsSavedEvent(savedReceipt.getId()));
         } else {
             savedReceipt.markAsStatus(ReceiptStatus.INCOMPLETE);
         }
+
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
+            @Override
+            public void afterCommit() {
+                if (receipt.getReceiptDetails().isComplete()) {
+                    eventPublisher.publishEvent(new ReceiptDetailsSavedEvent(savedReceipt.getId()));
+                }
+            }
+        });
+    }
+
+    public ReceiptInfoResponse getReceiptInfo(Long receiptId){
+        Receipt receipt = receiptRepository.findById(receiptId).orElseThrow(() -> new IllegalStateException("영수증을 가져오지 못했습니다."));
+        ReceiptDetails receiptDetails = receipt.getReceiptDetails();
+
+        return new ReceiptInfoResponse(receiptId,receiptDetails.getAmount(),receiptDetails.getTransactionDate());
     }
 }

@@ -31,5 +31,6 @@ public interface AccountBookService {
     List<ApproveAccountBookListResponseDto> getApproveAccountBookList(ApproveAccountBookListRequestDto requestDto);
 
     void approveAccountBook(ApproveAccountBookRequestDto requestDto);
+    boolean isTransactionNotExists(Long transactionId);
 
 }

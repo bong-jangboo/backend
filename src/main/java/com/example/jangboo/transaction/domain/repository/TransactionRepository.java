@@ -2,6 +2,7 @@ package com.example.jangboo.transaction.domain.repository;
 
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,5 +17,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 	List<Transaction> findTop5ByDeptIdOrderByDateDescTimeDesc(Long deptId);
 	Page<Transaction> findByDeptIdAndDateBetween(Long deptId, LocalDate startDate, LocalDate endDate, Pageable pageable);
 	List<Transaction> findByDescriptionContainingAndLableAndDeptIdAndAmount(String name,String lable,Long deptId,String amount);
-
+	Optional<Transaction> findByAmountAndDateAndTime(String amount, LocalDate date, LocalTime time);
+	Page<Transaction> findByDeptIdAndReceiptIdIsNotNull(Long deptId, Pageable pageable);
 }

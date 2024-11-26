@@ -60,6 +60,9 @@ public class Transaction {
 	@Column(name="description")
 	private String description;
 
+	@Column(nullable = true, name="receipt_id")
+	private Long receiptId;
+
 	@Builder
 	public Transaction(Long accountOwnerId, Long deptId, String lable, String amount, String transactionType, String balance, LocalDate date, LocalTime time, String description) {
 		this.accountOwnerId = accountOwnerId;
@@ -71,5 +74,9 @@ public class Transaction {
 		this.date = date;
 		this.time = time;
 		this.description = description;
+	}
+
+	public void updateReceipt(Long receiptId) {
+		this.receiptId = receiptId;
 	}
 }

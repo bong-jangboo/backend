@@ -15,7 +15,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.jangboo.accountBook.application.AccountBookService;
 import com.example.jangboo.oauth.client.response.MockTransactionResponse;
+import com.example.jangboo.receipt.service.dto.response.ReceiptInfoResponse;
 import com.example.jangboo.transaction.controller.dto.request.TransactionByDateRequest;
 import com.example.jangboo.transaction.controller.dto.response.Info.TransactionInfo;
 import com.example.jangboo.transaction.controller.dto.response.TransactionPageResponse;
@@ -26,11 +28,13 @@ import com.example.jangboo.transaction.domain.repository.TransactionRepository;
 @Service
 public class TransactionService {
 	private final TransactionRepository transactionRepository;
+	private final AccountBookService accountBookService;
 
 	public static final int PAGE_SIZE = 10;
 
-	public TransactionService(TransactionRepository transactionRepository) {
+	public TransactionService(TransactionRepository transactionRepository, AccountBookService accountBookService) {
 		this.transactionRepository = transactionRepository;
+		this.accountBookService = accountBookService;
 	}
 
 	public LocalDateTime findLatestUpdatedTransactionDateTime(Long deptId) {
@@ -114,6 +118,40 @@ public class TransactionService {
 		List<Transaction> transactions = transactionRepository.findByDescriptionContainingAndLableAndDeptIdAndAmount(name,"입금",deptId,"233000.0");
 		return new TransactionsResponse(
 			transactions.stream().map(TransactionInfo::from).toList()
+		);
+	}
+
+	@Transactional
+	public void updateReceiptId(ReceiptInfoResponse response){
+		Transaction transaction = matchTransaction(response);
+		transaction.updateReceipt(response.id());
+	}
+
+	private Transaction matchTransaction(ReceiptInfoResponse receipt){
+		LocalDate localDate = receipt.transactionDate().toLocalDate();
+		LocalTime localTime = receipt.transactionDate().toLocalTime();
+		String amount = "-"+receipt.amount()+".0";
+
+		Optional<Transaction> transaction = Optional.ofNullable(
+			transactionRepository.findByAmountAndDateAndTime(amount, localDate, localTime)
+				.orElseThrow(() -> new IllegalStateException("잔액을 가져오지 못했습니다.")));
+
+		return transaction.get();
+	}
+
+	@Transactional(readOnly = true)
+	public TransactionPageResponse getNonWriteTransactions(Long deptId, int pageNo) {
+		Page<Transaction> transactions = transactionRepository.findByDeptIdAndReceiptIdIsNotNull(deptId, getPageable(pageNo, PAGE_SIZE));
+
+		List<TransactionInfo> filteredTransactions = transactions.getContent().stream()
+			.filter(transaction -> accountBookService.isTransactionNotExists(transaction.getId()))
+			.map(TransactionInfo::from)
+			.toList();
+
+		return new TransactionPageResponse(
+			filteredTransactions,
+			transactions.getNumber(),
+			transactions.getTotalPages()
 		);
 	}
 }

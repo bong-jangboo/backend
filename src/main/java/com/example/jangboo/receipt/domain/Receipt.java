@@ -33,7 +33,7 @@ public class Receipt {
     private List<ReceiptItem> receiptItems = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
+    @Column(name = "status",length = 20)
     private ReceiptStatus receiptStatus;
 
 
