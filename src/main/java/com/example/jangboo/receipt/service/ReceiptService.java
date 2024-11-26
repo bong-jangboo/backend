@@ -10,6 +10,7 @@ import com.example.jangboo.receipt.domain.ReceiptRepository;
 import com.example.jangboo.receipt.domain.ReceiptStatus;
 import com.example.jangboo.receipt.event.ReceiptDetailsSavedEvent;
 import com.example.jangboo.receipt.service.dto.response.ReceiptInfoResponse;
+import com.example.jangboo.receipt.service.dto.response.ReceiptUrlAndIdResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,6 +27,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -88,4 +90,13 @@ public class ReceiptService {
 
         return new ReceiptInfoResponse(receiptId,receiptDetails.getAmount(),receiptDetails.getTransactionDate());
     }
+
+    public ReceiptUrlAndIdResponse getReceiptUrlAndId(Long receiptId) {
+        Receipt receipt = receiptRepository.findById(receiptId)
+            .orElseThrow(() -> new IllegalArgumentException("해당 영수증 ID를 찾을 수 없습니다: " + receiptId));
+
+        return new ReceiptUrlAndIdResponse(receiptId,receipt.getReceiptImgUrl());
+    }
+
+
 }
