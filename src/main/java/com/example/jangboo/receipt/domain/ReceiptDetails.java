@@ -28,7 +28,7 @@ public class ReceiptDetails {
     private String store;
 
     @Column(name = "amount")
-    private int amount;
+    private Integer amount;
 
     @Column(name = "transaction_date_time")
     private LocalDateTime transactionDate;
@@ -48,6 +48,11 @@ public class ReceiptDetails {
                 Integer.parseInt(ocrResponse.getTotalPrice()),
                 ocrResponse.getPaymentInfo().getTransactionDateTime()
         );
+    }
+
+    // ReceiptDetails 검증 로직
+    public boolean isComplete() {
+        return appcode != null && store != null && amount != null && transactionDate != null;
     }
 
     public void linkReceipt(Receipt receipt) {
