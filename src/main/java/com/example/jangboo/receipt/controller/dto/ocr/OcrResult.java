@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class OcrResult {
 
@@ -19,7 +20,12 @@ public class OcrResult {
         private String storeName;
 
         public static StoreInfoRes of(OcrJsonRes.StoreInfo storeInfo) {
-            return new StoreInfoRes(storeInfo.getName().getText());
+            return new StoreInfoRes(
+                    Optional.ofNullable(storeInfo)
+                            .map(OcrJsonRes.StoreInfo::getName)
+                            .map(OcrJsonRes.Name::getText)
+                            .orElse(null) // null 허용
+            );
         }
     }
 
@@ -32,6 +38,10 @@ public class OcrResult {
         private String confirmNum;
 
         public LocalDateTime getTransactionDateTime() {
+            if (date == null || time == null) {
+                return null;
+            }
+
             String cleanedDate = date.replaceAll("\\(.*\\)", ""); // (일) 같은 요일 제거
             String cleanedTime = time.replaceAll("\\s+", ""); // 모든 공백 제거
             String dateTimeString = cleanedDate + " " + cleanedTime;
@@ -46,9 +56,15 @@ public class OcrResult {
 
         public static PaymentInfoRes of(OcrJsonRes.PaymentInfo paymentInfo) {
             return new PaymentInfoRes(
-                    paymentInfo.getDate().getText(),
-                    paymentInfo.getTime().getText(),
-                    paymentInfo.getConfirmNum().getText()
+                    Optional.ofNullable(paymentInfo.getDate())
+                                    .map(OcrJsonRes.Date::getText)
+                                            .orElse(null),
+                    Optional.ofNullable(paymentInfo.getTime())
+                            .map(OcrJsonRes.Time::getText)
+                            .orElse(null),
+                    Optional.ofNullable(paymentInfo.getConfirmNum())
+                            .map(OcrJsonRes.ConfirmNum::getText)
+                            .orElse(null) // null 허용
             );
         }
     }
