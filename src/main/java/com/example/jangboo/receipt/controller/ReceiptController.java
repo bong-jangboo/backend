@@ -4,6 +4,8 @@ import com.example.jangboo.auth.controller.dto.Info.CurrentUserInfo;
 import com.example.jangboo.global.dto.ResultDto;
 import com.example.jangboo.receipt.controller.dto.response.ReceiptResponse;
 import com.example.jangboo.receipt.service.ReceiptService;
+import com.example.jangboo.receipt.service.dto.response.ReceiptUrlAndIdResponse;
+
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -39,5 +41,12 @@ public class ReceiptController {
         Long deptId = userInfo.deptId();
         ReceiptResponse response = receiptService.getReceipt(deptId, page, size, sort, fromDate, toDate);
         return ResponseEntity.ok().body(ResultDto.of(200, "영수증 리스트 조회 성공", response));
+    }
+
+    @GetMapping("/url")
+    public ResponseEntity<ResultDto<ReceiptUrlAndIdResponse>> getReceipts(
+        @AuthenticationPrincipal CurrentUserInfo userInfo,
+        @RequestParam Long receiptId) {
+        return ResponseEntity.ok().body(ResultDto.of(200, "영수증 리스트 조회 성공", receiptService.getReceiptUrlAndId(receiptId)));
     }
 }
