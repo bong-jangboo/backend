@@ -144,7 +144,7 @@ public class TransactionService {
 		String amount = "-"+receipt.amount()+".0";
 
 		Optional<Transaction> transaction = Optional.ofNullable(
-			transactionRepository.findByAmountAndDateAndTime(amount, localDate, localTime)
+			transactionRepository.findByAmountAndDateAndTimeIgnoringSeconds(amount, localDate, localTime)
 				.orElseThrow(() -> new IllegalStateException("잔액을 가져오지 못했습니다.")));
 
 		return transaction.get();

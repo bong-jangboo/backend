@@ -9,6 +9,8 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.example.jangboo.transaction.domain.Transaction;
 
@@ -19,4 +21,12 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 	List<Transaction> findByDescriptionContainingAndLableAndDeptIdAndAmount(String name,String lable,Long deptId,String amount);
 	Optional<Transaction> findByAmountAndDateAndTime(String amount, LocalDate date, LocalTime time);
 	Page<Transaction> findByDeptIdAndReceiptIdIsNotNull(Long deptId, Pageable pageable);
+	@Query("SELECT t FROM Transaction t " +
+		"WHERE t.amount = :amount " +
+		"AND t.date = :date " +
+		"AND FUNCTION('TIME_FORMAT', t.time, '%H:%i') = FUNCTION('TIME_FORMAT', :time, '%H:%i')")
+	Optional<Transaction> findByAmountAndDateAndTimeIgnoringSeconds(
+		@Param("amount") String amount,
+		@Param("date") LocalDate date,
+		@Param("time") LocalTime time);
 }
