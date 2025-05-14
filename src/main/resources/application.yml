@@ -1,28 +1,71 @@
 spring:
-  config:
-    import: "optional:application-secret.yml"
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/jangboo
-    username: root
-    password: jiwon1923
+    driver-class-name: ${DB_DRIVER:com.mysql.cj.jdbc.Driver}
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: ${JPA_DDL_AUTO:update}
     properties:
       hibernate:
-        SQL: debug
+        SQL: ${JPA_SQL_LOG_LEVEL:debug}
         dialect:
-          storage_engine: innodb
-        format_sql: true
-        show_sql: true
-        use_sql_comments: true
+          storage_engine: ${JPA_STORAGE_ENGINE:innodb}
+        format_sql: ${JPA_FORMAT_SQL:true}
+        show_sql: ${JPA_SHOW_SQL:true}
+        use_sql_comments: ${JPA_USE_SQL_COMMENTS:true}
+
   servlet:
     multipart:
       enabled: true
       max-file-size: 10MB
       max-request-size: 10MB
+
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+
+jwt:
+  secret_key: ${JWT_SECRET}
+  access_token:
+    valid_time: ${JWT_ACCESS_TOKEN_VALID}
+  refresh_token:
+    valid_time: ${JWT_REFRESH_TOKEN_VALID}
+  header: Authorization
+  prefix: Bearer
+
+jangboo:
+  front_end:
+    url: ${FRONTEND_URL}
+  ocr:
+    api-secret: ${OCR_SECRET}
+    api-url: ${OCR_URL}
+
+oauth:
+  open-banking:
+    uri:
+      token-uri: ${OB_TOKEN_URI}
+      redirect-uri: ${OB_REDIRECT_URI}
+      user_info-uri: ${OB_USER_INFO_URI}
+    key:
+      client-id: ${OB_CLIENT_ID}
+      client-secret: ${OB_CLIENT_SECRET}
+      token-secret: ${OB_TOKEN_SECRET}
+    scope: login inquiry transfer
+
+cloud:
+  aws:
+    s3:
+      bucket-name: ${AWS_S3_BUCKET}
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
+    region:
+      static: ${AWS_REGION}
+
+output:
+  ansi:
+    enabled: always
