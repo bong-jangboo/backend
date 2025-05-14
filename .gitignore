@@ -39,3 +39,9 @@ out/
 ### Security ###
 src/main/resources/application-secret.yml
 src/main/resources/config/jwt.properties
+
+### .env ###
+.env
+.env.local
+.env.staging
+.env.prod
