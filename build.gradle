@@ -29,6 +29,9 @@ dependencies {
 	implementation 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
+    // THYMELEAF
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
     // Spring Security
     implementation 'org.springframework.boot:spring-boot-starter-security'
     testImplementation 'org.springframework.security:spring-security-test'
