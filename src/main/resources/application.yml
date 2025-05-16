@@ -69,3 +69,6 @@ cloud:
 output:
   ansi:
     enabled: always
+
+mock:
+  uri: ${MOCK_URI}
