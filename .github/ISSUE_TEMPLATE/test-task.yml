@@ -1,0 +1,45 @@
+---
+name: "🧪 Test Task"
+description: "테스트 코드 추가 또는 테스트 전략 개선"
+title: "[Test] "
+labels: ["🧪 test"]
+assignees: []
+
+body:
+  - type: textarea
+    id: target
+    attributes:
+      label: 🧪 테스트 대상
+      description: 어떤 클래스, 서비스, 기능에 대한 테스트인지 작성해주세요.
+      placeholder: 예) UserService의 예외 케이스 및 엣지 케이스
+
+  - type: textarea
+    id: current
+    attributes:
+      label: 📉 현재 테스트 상황
+      description: 현재 커버리지나 문제 상황을 간단히 서술해주세요.
+      placeholder: 예) 전체 커버리지 42%, 예외 상황 테스트 없음
+
+  - type: textarea
+    id: goal
+    attributes:
+      label: 🎯 목표
+      description: 어떤 수준까지 보완하고자 하는지 구체적인 목표를 작성해주세요.
+      placeholder: 예) 커버리지를 70% 이상으로 확대, 예외 발생 상황까지 포함
+
+  - type: textarea
+    id: checklist
+    attributes:
+      label: ✅ 작업 내용
+      value: |
+        - [ ] 테스트 메서드 설계
+        - [ ] Mock 데이터 구성
+        - [ ] 커버리지 측정 및 리포트 확인
+
+  - type: textarea
+    id: references
+    attributes:
+      label: 📎 관련 이슈
+      description: 관련 이슈 번호, 기술 문서, 설계서, 노션 링크 등을 입력해주세요.
+      value: |
+        - 관련 이슈: #
