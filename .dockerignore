@@ -1,0 +1,35 @@
+# === 기본 빌드 제외 ===
+/build/
+/.gradle/
+/out/
+/target/
+
+# === IDE & OS ===
+*.iml
+*.log
+*.swp
+*.DS_Store
+.idea/
+.vscode/
+
+# === Git ===
+.git
+.gitignore
+.github/
+
+# === 환경 변수 파일 ===
+.env
+.env.*
+
+# === 테스트 관련 ===
+test-output/
+coverage/
+*.exec
+/test
+
+# === Node or frontend 연동시 ===
+node_modules/
+dist/
+
+# === docs 관련 ===
+docs/
