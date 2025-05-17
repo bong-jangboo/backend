@@ -1,0 +1,50 @@
+name: "🐞 Bug Report"
+description: "예상과 다르게 동작하는 기능이나 오류를 보고합니다."
+title: "[Bug] "
+labels: ["🐞 bug"]
+assignees: []
+
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: ❗ 증상 요약
+      description: 어떤 버그가 발생했는지 한 문장으로 설명해주세요.
+      placeholder: 예) 로그인 시 비밀번호 오류가 아닌 500 서버 오류가 발생합니다.
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 🔍 재현 절차
+      description: 버그를 재현할 수 있는 방법을 단계별로 써주세요.
+      placeholder: |
+        1. 로그인 페이지로 이동
+        2. 잘못된 비밀번호 입력
+        3. '500 Internal Server Error' 발생
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: ✅ 기대 동작
+      description: 버그가 없었다면 어떤 결과가 나와야 하는지 작성해주세요.
+      placeholder: 예) "비밀번호가 일치하지 않습니다"라는 메시지가 출력되어야 합니다.
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: ❌ 실제 동작
+      description: 현재 실제로 발생한 문제를 작성해주세요.
+      placeholder: 예) 서버에서 500 오류 응답이 반환됩니다.
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: 💻 실행 환경
+      description: 사용한 브라우저, 기기, OS 등을 기입해주세요.
+      placeholder: 예) Chrome 124, macOS Sonoma, M1 Mac
+
+  - type: textarea
+    id: etc
+    attributes:
+      label: 💬 기타 정보
+      description: 로그, 스크린샷 등 추가 정보가 있다면 적어주세요.

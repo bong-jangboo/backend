@@ -1,0 +1,31 @@
+name: "📝 Documentation Task"
+description: "API 명세, 가이드, README 등 문서 관련 작업"
+title: "[Docs] "
+labels: ["📝 docs"]
+assignees: [📝 docs]
+
+body:
+  - type: textarea
+    id: target
+    attributes:
+      label: 📄 문서 대상
+      description: 어떤 문서를 다루는지 작성해주세요.
+      placeholder: 예) `README.md`, 사용자 API 명세, 인프라 설정 가이드
+
+  - type: textarea
+    id: current
+    attributes:
+      label: 🧾 현재 문서 상태
+      description: 부족하거나 오래된 정보, 오타, 구조 문제 등을 작성해주세요.
+      placeholder: 예) API 응답 필드가 실제와 다름. 예제도 누락되어 있음.
+
+  - type: textarea
+    id: task
+    attributes:
+      label: ✏️ 작업 내용
+      description: 문서 보완 방향과 계획을 작성해주세요.
+      value: |
+        - [ ] 최신 API 정보 반영
+        - [ ] 예제 코드 추가
+        - [ ] 목차 정리 및 서식 통일
+
