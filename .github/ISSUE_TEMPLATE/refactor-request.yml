@@ -1,0 +1,63 @@
+name: "♻️ Refactoring Request"
+description: "코드 구조 개선 및 품질 향상을 위한 리팩토링 이슈 템플릿"
+title: "[Refactor] "
+labels: ["♻️ refactor"]
+assignees: []
+
+body:
+  - type: textarea
+    id: context
+    attributes:
+      label: "🧩 현재 코드 상태"
+      description: |
+        현재 코드의 구조, 역할 분담, 중복 및 비효율성이 있는 부분을 구체적으로 기술해주세요.
+      placeholder: |
+        예) Service와 DAO의 역할이 혼재되어 있고, 비즈니스 로직이 컨트롤러에 노출되어 테스트가 어려운 상태입니다.
+
+  - type: textarea
+    id: reason
+    attributes:
+      label: "🤔 리팩토링 필요성"
+      description: |
+        해당 리팩토링이 왜 필요한지, 개선 시 기대 효과(가독성 향상, 유지보수 용이성, 재사용성 증가 등)를 작성해주세요.
+      placeholder: |
+        예) 코드 중복 및 복잡도로 인해 유지보수가 어렵고, 테스트 커버리지가 낮습니다. SRP(Single Responsibility Principle)를 적용해 개선이 필요합니다.
+
+  - type: textarea
+    id: plan
+    attributes:
+      label: "🔧 리팩토링 계획"
+      description: |
+        어떤 방식으로 코드 구조를 개선할지 구체적인 변경 사항을 기술해주세요.
+      value: |
+        - [ ] 관련 모듈 및 클래스 식별
+        - [ ] 기능별로 모듈 분리 및 인터페이스 도입
+        - [ ] 단위 테스트 보강 및 회귀 테스트 진행
+
+  - type: textarea
+    id: risks
+    attributes:
+      label: "⚠️ 리팩토링 시 주의점"
+      description: |
+        리팩토링으로 인해 발생할 수 있는 부작용이나, 특별히 고려해야 할 사항들을 기재해주세요.
+      placeholder: |
+        예) 기존 로직 변경으로 인한 사이드 이펙트 발생 가능성, 변경 범위에 따른 회귀 테스트 필수
+
+  - type: textarea
+    id: references
+    attributes:
+      label: "📎 관련 자료 / 참고 이슈"
+      description: |
+        참고한 문서, 이전 유사 이슈, 토론 내용 등을 남겨주세요.
+      value: |
+        - 관련 이슈: #
+        - 참고 문서: https://notion.so/리팩토링-가이드
+
+  - type: textarea
+    id: etc
+    attributes:
+      label: "💬 기타 (ETC)"
+      description: |
+        추가로 논의할 사항이나 팀 내 공유할 코멘트가 있다면 작성해주세요.
+      placeholder: |
+        예) 리팩토링 이후 추가적인 성능 모니터링이 필요할 수 있습니다.
