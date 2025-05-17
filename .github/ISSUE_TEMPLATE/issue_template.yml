@@ -27,7 +27,7 @@ body:
     attributes:
       label: 📌 설명 (What & Why)
       description: 어떤 작업인지, 왜 필요한지 명확히 작성해주세요
-      placeholder: 예: 현재 S3 직접 접근 코드로 인해 테스트가 어렵고, 향후 인프라 교체도 어렵습니다. 이를 추상화 계층으로 분리합니다.
+      placeholder: 예) 현재 S3 직접 접근 코드로 인해 테스트가 어렵고, 향후 인프라 교체도 어렵습니다. 이를 추상화 계층으로 분리합니다.
 
   - type: textarea
     id: todo
