@@ -1,0 +1,21 @@
+package com.example.jangboo.v2.role.domain;
+
+public enum RoleType {
+    MEMBER,
+
+    DEPT_HEAD,
+    DEPT_VICE_HEAD,
+    DEPT_TREASURER,
+    DEPT_EXECUTIVE,
+
+    COLLEGE_HEAD,
+    COLLEGE_VICE_HEAD,
+    COLLEGE_TREASURER,
+    COLLEGE_EXECUTIVE,
+
+    UNIVERSITY_HEAD,
+    UNIVERSITY_VICE_HEAD,
+    UNIVERSITY_TREASURER,
+    UNIVERSITY_EXECUTIVE,
+
+}
