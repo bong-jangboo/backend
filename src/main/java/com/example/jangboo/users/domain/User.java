@@ -1,11 +1,6 @@
 package com.example.jangboo.users.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -45,6 +40,14 @@ public class User {
 	@Column(nullable = true)
 	private Boolean isPayed;
 
+	// 소셜 로그인
+	@Column(name = "auth_provider")
+	@Enumerated(EnumType.STRING)
+	private AuthProvider authProvider;
+
+	@Column(name ="social_id", unique = true)
+	private String socialId;
+
 	@Builder
 	public User(Long deptId, String name, String loginId, String password, String number) {
 		this.name = name;
@@ -54,6 +57,19 @@ public class User {
 		this.number = number;
 		this.isPayed=false;
 	}
+
+	@Builder
+	public User(Long deptId, String name, String loginId, String password, String number, AuthProvider authProvider, String socialId) {
+		this.deptId = deptId;
+		this.name = name;
+		this.loginId = loginId;
+		this.password = password;
+		this.number = number;
+		this.authProvider = authProvider;
+		this.socialId = socialId;
+		this.isPayed = false;
+	}
+
 
 	public void updatePayedInfo(){
 		this.isPayed = true;
