@@ -19,16 +19,15 @@ import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.example.jangboo.auth.JwtTokenProvider;
-import com.example.jangboo.auth.controller.dto.Info.CurrentUserInfo;
-import com.example.jangboo.auth.controller.dto.request.LoginRequest;
-import com.example.jangboo.univ.controller.dto.request.RegisterRequest;
-import com.example.jangboo.auth.service.AuthService;
-import com.example.jangboo.role.domain.Role;
-import com.example.jangboo.role.domain.RoleRepository;
-import com.example.jangboo.role.domain.RoleType;
-import com.example.jangboo.users.domain.User;
-import com.example.jangboo.users.domain.UserRepository;
+import com.example.legacy.auth.JwtTokenProvider;
+import com.example.legacy.auth.controller.dto.Info.CurrentUserInfo;
+import com.example.legacy.auth.controller.dto.request.LoginRequest;
+import com.example.legacy.auth.service.AuthService;
+import com.example.legacy.role.domain.Role;
+import com.example.legacy.role.domain.RoleRepository;
+import com.example.legacy.role.domain.RoleType;
+import com.example.legacy.users.domain.User;
+import com.example.legacy.users.domain.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.transaction.Transactional;
