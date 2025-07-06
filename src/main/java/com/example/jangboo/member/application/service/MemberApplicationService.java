@@ -32,7 +32,7 @@ public class MemberApplicationService {
                 command.getSocialId()
         );
 
-        memberRepository.save(member);
+        Member saved = memberRepository.save(member);
 
         eventPublisher.publish(
                 MemberRegisteredEvent.builder()
@@ -44,7 +44,7 @@ public class MemberApplicationService {
                         .build()
         );
 
-        return member.getId();
+        return saved.getId();
     }
 
     /**
