@@ -4,7 +4,9 @@ import com.example.jangboo.member.application.command.*;
 import com.example.jangboo.member.domain.Member;
 import com.example.jangboo.member.domain.MemberRepository;
 import com.example.jangboo.member.domain.event.MemberRegisteredEvent;
+import com.example.jangboo.member.exception.MemberErrorCode;
 import com.example.jangboo.shared.event.DomainEventPublisher;
+import com.example.jangboo.shared.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +24,7 @@ public class MemberApplicationService {
     @Transactional
     public Long registerMember(RegisterMemberCommand command) {
         if(memberRepository.existsBySocial(command.getSocialProvider(), command.getSocialId())){
-            throw new IllegalStateException("이미 가입된 소셜 계정입니다.");
+            throw new BusinessException(MemberErrorCode.DUPLICATE_SOCIAL_ID);
         }
 
         Member member = Member.createNewMember(
@@ -53,7 +55,7 @@ public class MemberApplicationService {
     @Transactional
     public void updateProfile(UpdateProfileCommand command) {
         Member member = memberRepository.findById(command.getMemberId())
-                .orElseThrow(()->new IllegalArgumentException("회원이 존재하지 않습니다."));
+                .orElseThrow(()->new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         member.updateProfile(command.getNickName());
         memberRepository.save(member);
@@ -65,7 +67,7 @@ public class MemberApplicationService {
     @Transactional
     public void registerEmail(RegisterEmailCommand command) {
         Member member = memberRepository.findById(command.getMemberId())
-                .orElseThrow(()->new IllegalArgumentException("회원이 존재하지 않습니다."));
+                .orElseThrow(()->new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
         member.registerEmail(command.getEmail());
         memberRepository.save(member);
     }
@@ -76,7 +78,7 @@ public class MemberApplicationService {
     @Transactional
     public void registerPhoneNumber(RegisterPhoneNumberCommand command) {
         Member member = memberRepository.findById(command.getMemberId())
-                .orElseThrow(()->new IllegalArgumentException("회원이 존재하지 않습니다."));
+                .orElseThrow(()->new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
         member.registerPhoneNumber(command.getPhoneNumber());
         memberRepository.save(member);
     }
@@ -87,7 +89,7 @@ public class MemberApplicationService {
     @Transactional
     public void deactivateMember(DeactivateMemberCommand command) {
         Member member = memberRepository.findById(command.getMemberId())
-                .orElseThrow(()->new IllegalArgumentException("회원이 존재하지 않습니다."));
+                .orElseThrow(()->new BusinessException(MemberErrorCode.MEMBER_NOT_FOUND));
         member.deactivate();
         memberRepository.save(member);
     }
