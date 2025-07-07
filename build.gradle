@@ -23,57 +23,71 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework:spring-web'
-	implementation 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
+    // ==========================
+    // Core Spring
+    // ==========================
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
-    // Test
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // ==========================
+    // DB & Data
+    // ==========================
+    runtimeOnly 'com.mysql:mysql-connector-j'
     testImplementation 'com.h2database:h2'
 
+    // ==========================
+    // JSON & Parsing
+    // ==========================
+    implementation 'org.json:json:20230227'
+    implementation 'com.jayway.jsonpath:json-path:2.7.0'
 
-
-    // Spring Security
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    testImplementation 'org.springframework.security:spring-security-test'
-
-
-    //SPRING_REST_DOCS
-    asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
-    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-
-    //JWT
+    // ==========================
+    // JWT
+    // ==========================
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
-    //VALIDATION
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    // ==========================
+    // AWS
+    // ==========================
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
-    //MYSQL
-    runtimeOnly 'com.mysql:mysql-connector-j'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    // ==========================
+    // QueryDSL
+    // ==========================
+    implementation 'com.querydsl:querydsl-jpa:5.1.0:jakarta'
+    annotationProcessor 'com.querydsl:querydsl-apt:5.1.0:jakarta'
+    annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
+    annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
 
-
-    //JSONObject
-    implementation 'org.json:json:20230227'
-    implementation 'com.jayway.jsonpath:json-path:2.7.0'
-
-    // swagger
+    // ==========================
+    // Swagger (OpenAPI)
+    // ==========================
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 
-	//AWS
-	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+    // ==========================
+    // Lombok
+    // ==========================
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 
-    // querydsl
-    implementation 'com.querydsl:querydsl-jpa:5.1.0:jakarta'
-    annotationProcessor "com.querydsl:querydsl-apt:5.1.0:jakarta"
-    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
-    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+    // ==========================
+    // Spring Rest Docs
+    // ==========================
+    asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 
-	//Redis
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    // ==========================
+    // Test
+    // ==========================
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
 
 }
 
