@@ -5,7 +5,9 @@ import com.example.jangboo.member.application.service.MemberApplicationService;
 import com.example.jangboo.member.domain.Member;
 import com.example.jangboo.member.domain.MemberRepository;
 import com.example.jangboo.member.domain.SocialProvider;
+import com.example.jangboo.member.exception.MemberErrorCode;
 import com.example.jangboo.shared.event.DomainEventPublisher;
+import com.example.jangboo.shared.exception.BusinessException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,10 +45,20 @@ public class MemberApplicationServiceTest {
                 .build();
         when(memberRepository.existsBySocial(any(),any())).thenReturn(false);
 
+        // save() mock에서 id 세팅
+        when(memberRepository.save(any())).thenAnswer(invocation -> {
+            Member member = invocation.getArgument(0);
+            Field idField = Member.class.getDeclaredField("id");
+            idField.setAccessible(true);
+            idField.set(member, 1L);
+            return member;
+        });
+
         // When
         Long id = service.registerMember(command);
 
         // Then
+        assertThat(id).isEqualTo(1L);
         verify(eventPublisher).publish(any());
     }
 
@@ -82,10 +94,11 @@ public class MemberApplicationServiceTest {
         assertThat(savedId).isEqualTo(1L);
 
         // when - 두 번째 가입 시도
-        assertThrows(IllegalStateException.class, () ->
+        // then
+        BusinessException ex = assertThrows(BusinessException.class, () ->
                 service.registerMember(command)
         );
-
+        assertThat(ex.getErrorCode()).isEqualTo(MemberErrorCode.DUPLICATE_SOCIAL_ID);
     }
 
 

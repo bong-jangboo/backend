@@ -2,6 +2,8 @@ package com.example.jangboo.member.domain;
 
 import com.example.jangboo.member.domain.vo.Email;
 import com.example.jangboo.member.domain.vo.PhoneNumber;
+import com.example.jangboo.member.exception.MemberErrorCode;
+import com.example.jangboo.shared.exception.BusinessException;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -84,7 +86,7 @@ public class Member {
      */
     public void updateProfile(String nickname) {
         if (!isActive()) {
-            throw new IllegalStateException("DEACTIVATED 상태에서는 프로필 수정이 불가합니다.");
+            throw new BusinessException(MemberErrorCode.CANNOT_UPDATE_DEACTIVATED);
         }
         this.nickname = nickname;
         this.updatedAt = LocalDateTime.now();
@@ -95,7 +97,7 @@ public class Member {
      */
     public void registerEmail(Email email) {
         if (this.email != null) {
-            throw new IllegalStateException("이미 이메일이 등록된 회원입니다.");
+            throw new BusinessException(MemberErrorCode.EMAIL_ALREADY_REGISTERED);
         }
         this.email = email;
         this.updatedAt = LocalDateTime.now();
@@ -106,7 +108,7 @@ public class Member {
      */
     public void registerPhoneNumber(PhoneNumber phoneNumber) {
         if (this.phoneNumber != null) {
-            throw new IllegalStateException("이미 전화번호가 등록된 회원입니다.");
+            throw new BusinessException(MemberErrorCode.PHONE_ALREADY_REGISTERED);
         }
         this.phoneNumber = phoneNumber;
         this.updatedAt = LocalDateTime.now();
@@ -117,7 +119,7 @@ public class Member {
      */
     public void sleep() {
         if (!isActive()) {
-            throw new IllegalStateException("휴면 전환은 ACTIVE 상태에서만 가능합니다.");
+            throw new BusinessException(MemberErrorCode.SLEEP_ONLY_ACTIVE);
         }
         this.status = MemberStatus.SLEEP;
         this.updatedAt = LocalDateTime.now();
