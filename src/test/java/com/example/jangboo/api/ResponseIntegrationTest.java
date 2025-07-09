@@ -83,8 +83,7 @@ public class ResponseIntegrationTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.success").value(false))
                 .andExpect(jsonPath("$.error.code").value("INVALID_INPUT"))
-                .andExpect(jsonPath("$.error.fieldErrors[0].field").value("name"))
-                .andExpect(jsonPath("$.error.fieldErrors[1].field").value("email"))
+                .andExpect(jsonPath("$.error.fieldErrors[*].field").value(org.hamcrest.Matchers.hasItems("email", "name")))
                 .andExpect(jsonPath("$.error.fieldErrors[0].message").exists());
 
     }
