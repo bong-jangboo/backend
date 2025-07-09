@@ -1,13 +1,13 @@
-package com.example.jangboo.member;
+package com.bongjangboo.jangboo.member;
 
-import com.example.jangboo.member.application.command.RegisterMemberCommand;
-import com.example.jangboo.member.application.service.MemberApplicationService;
-import com.example.jangboo.member.domain.Member;
-import com.example.jangboo.member.domain.MemberRepository;
-import com.example.jangboo.member.domain.SocialProvider;
-import com.example.jangboo.member.exception.MemberErrorCode;
-import com.example.jangboo.shared.event.DomainEventPublisher;
-import com.example.jangboo.shared.exception.BusinessException;
+import com.bongjangboo.member.application.command.RegisterMemberCommand;
+import com.bongjangboo.member.application.service.MemberApplicationService;
+import com.bongjangboo.member.domain.Member;
+import com.bongjangboo.member.domain.MemberRepository;
+import com.bongjangboo.member.domain.SocialProvider;
+import com.bongjangboo.member.exception.MemberErrorCode;
+import com.bongjangboo.shared.event.DomainEventPublisher;
+import com.bongjangboo.shared.exception.BusinessException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

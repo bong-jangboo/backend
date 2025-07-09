@@ -1,15 +1,13 @@
-package com.example.jangboo.member;
+package com.bongjangboo.jangboo.member;
 
-import com.example.jangboo.member.domain.Member;
-import com.example.jangboo.member.domain.MemberRepository;
-import com.example.jangboo.member.domain.MemberStatus;
-import com.example.jangboo.member.domain.SocialProvider;
-import lombok.RequiredArgsConstructor;
+import com.bongjangboo.member.domain.Member;
+import com.bongjangboo.member.domain.MemberRepository;
+import com.bongjangboo.member.domain.MemberStatus;
+import com.bongjangboo.member.domain.SocialProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;

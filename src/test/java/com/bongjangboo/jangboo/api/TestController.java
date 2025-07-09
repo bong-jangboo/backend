@@ -1,10 +1,10 @@
-package com.example.jangboo.api;
+package com.bongjangboo.jangboo.api;
 
-import com.example.jangboo.member.domain.SocialProvider;
-import com.example.jangboo.member.exception.MemberErrorCode;
-import com.example.jangboo.shared.exception.BusinessException;
-import com.example.jangboo.shared.response.ApiResponse;
-import com.example.jangboo.shared.response.ResponseUtil;
+import com.bongjangboo.member.domain.SocialProvider;
+import com.bongjangboo.member.exception.MemberErrorCode;
+import com.bongjangboo.shared.exception.BusinessException;
+import com.bongjangboo.shared.response.ApiResponse;
+import com.bongjangboo.shared.response.ResponseUtil;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

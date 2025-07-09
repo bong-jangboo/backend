@@ -1,7 +1,7 @@
-package com.example.jangboo.api;
+package com.bongjangboo.jangboo.api;
 
-import com.example.jangboo.shared.response.ApiError;
-import com.example.jangboo.shared.response.ApiResponse;
+import com.bongjangboo.shared.response.ApiError;
+import com.bongjangboo.shared.response.ApiResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

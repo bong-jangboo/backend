@@ -1,4 +1,4 @@
-package com.example.jangboo.api;
+package com.bongjangboo.jangboo.api;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
