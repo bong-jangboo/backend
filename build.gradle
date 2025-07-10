@@ -2,7 +2,6 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.3.3'
     id 'io.spring.dependency-management' version '1.1.6'
-    id 'org.asciidoctor.jvm.convert' version "3.3.2"
 }
 
 group = 'com.bongjangboo'
@@ -14,120 +13,35 @@ java {
     }
 }
 
-configurations {
-    asciidoctorExtensions
-}
-
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    // ==========================
     // Core Spring
-    // ==========================
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
-    // ==========================
-    // DB & Data
-    // ==========================
+    // DB
     runtimeOnly 'com.mysql:mysql-connector-j'
     testImplementation 'com.h2database:h2'
 
-    // ==========================
-    // JSON & Parsing
-    // ==========================
-    implementation 'org.json:json:20230227'
-    implementation 'com.jayway.jsonpath:json-path:2.7.0'
-
-    // ==========================
     // JWT
-    // ==========================
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
-    // ==========================
-    // AWS
-    // ==========================
-    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-
-    // ==========================
-    // QueryDSL
-    // ==========================
-    implementation 'com.querydsl:querydsl-jpa:5.1.0:jakarta'
-    annotationProcessor 'com.querydsl:querydsl-apt:5.1.0:jakarta'
-    annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
-    annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
-
-    // ==========================
-    // Swagger (OpenAPI)
-    // ==========================
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
-
-    // ==========================
     // Lombok
-    // ==========================
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 
-    // ==========================
-    // Spring Rest Docs
-    // ==========================
-    asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
-    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-
-    // ==========================
     // Test
-    // ==========================
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.security:spring-security-test'
-
-}
-
-ext {
-    snippetsDir = file('./build/generated-snippets')
 }
 
 test {
-    useJUnitPlatform()
-    outputs.dir snippetsDir
-}
-
-asciidoctor.doFirst {
-    delete file("src/main/resources/static/docs")
-}
-
-asciidoctor {
-    inputs.dir snippetsDir
-    dependsOn test
-    configurations 'asciidoctorExtensions'
-}
-
-bootJar {
-    dependsOn asciidoctor
-    copy {
-        from("${asciidoctor.outputDir}")
-        into 'src/main/resources/static/docs'
-    }
-}
-
-task copyDocument(type: Copy) {
-    dependsOn asciidoctor
-    from file("$build/docs/asciidoc")
-    into file("src/main/resources/static/docs")
-}
-
-build {
-    dependsOn copyDocument
-}
-
-tasks.named('test') {
     useJUnitPlatform()
 }
