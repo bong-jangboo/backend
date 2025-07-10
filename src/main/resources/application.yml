@@ -38,6 +38,14 @@ logging:
     name: ${LOGGING_FILE_NAME:}
     path: ${LOGGING_FILE_PATH:}
 
+jwt:
+  secret_key: ${JWT_SECRET}
+  access_token:
+    valid_time: ${JWT_ACCESS_TOKEN_VALID}
+  refresh_token:
+    valid_time: ${JWT_REFRESH_TOKEN_VALID}
+
+
 output:
   ansi:
     enabled: never
