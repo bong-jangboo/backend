@@ -1,4 +1,4 @@
-package com.bongjangboo.jangboo.member;
+package com.bongjangboo.member;
 
 import com.bongjangboo.member.application.command.RegisterMemberCommand;
 import com.bongjangboo.member.application.service.MemberApplicationService;

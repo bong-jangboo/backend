@@ -1,4 +1,4 @@
-package com.bongjangboo.jangboo.member;
+package com.bongjangboo.member;
 
 import com.bongjangboo.member.domain.Member;
 import com.bongjangboo.member.domain.MemberRepository;

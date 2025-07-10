@@ -1,4 +1,4 @@
-package com.bongjangboo.jangboo.api;
+package com.bongjangboo.api;
 
 import com.bongjangboo.member.domain.SocialProvider;
 import com.bongjangboo.member.exception.MemberErrorCode;

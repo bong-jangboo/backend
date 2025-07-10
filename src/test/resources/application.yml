@@ -28,6 +28,13 @@ logging:
     org.hibernate.SQL: debug
     org.hibernate.type.descriptor.sql.BasicBinder: trace
 
+jwt:
+  secret_key: Q4P+zTVdf1LNgVXCnkhWlQqoAxxLy0DuHEPOF6d+R18=
+  access_token:
+    valid_time: 3600
+  refresh_token:
+    valid_time: 604800
+
 output:
   ansi:
     enabled: always

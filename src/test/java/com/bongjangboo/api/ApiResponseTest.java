@@ -1,4 +1,4 @@
-package com.bongjangboo.jangboo.api;
+package com.bongjangboo.api;
 
 import com.bongjangboo.shared.response.ApiError;
 import com.bongjangboo.shared.response.ApiResponse;
