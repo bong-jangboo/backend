@@ -26,9 +26,7 @@ spring:
 logging:
   level:
     root: ${LOGGING_LEVEL_ROOT:info}
-    org.hibernate.SQL: ${LOGGING_LEVEL_ORG_HIBERNATE_SQL:warn}
-  pattern:
-    console: ${LOGGING_PATTERN_CONSOLE:}
+    org.hibernate.SQL: ${LOGGING_LEVEL_ORG_HIBERNATE_SQL:debug}
   file:
     name: ${LOGGING_FILE_NAME:}
     path: ${LOGGING_FILE_PATH:}
