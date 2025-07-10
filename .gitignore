@@ -45,3 +45,7 @@ src/main/resources/config/jwt.properties
 .env.local
 .env.staging
 .env.prod
+.env.legacy
+.env.test
+.env.develop
+.env.integration

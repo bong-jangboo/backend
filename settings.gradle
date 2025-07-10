@@ -1,1 +1,4 @@
-rootProject.name = 'jangboo'
+rootProject.name = 'backend'
+
+include ':legacy'
+project(':legacy').projectDir = file('legacy')
