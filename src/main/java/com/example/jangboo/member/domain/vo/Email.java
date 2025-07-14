@@ -15,6 +15,12 @@ public class Email {
 
     String value;
 
+    /**
+     * Constructs an Email object after validating the provided string.
+     *
+     * @param value the email address to encapsulate
+     * @throws IllegalArgumentException if the input is null or does not match the email format
+     */
     public Email(String value) {
         if (value == null || !EMAIL_PATTERN.matcher(value).matches()) {
             throw new IllegalArgumentException("Invalid email");

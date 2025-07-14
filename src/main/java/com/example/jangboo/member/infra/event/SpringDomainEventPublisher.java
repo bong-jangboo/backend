@@ -16,6 +16,11 @@ public class SpringDomainEventPublisher implements DomainEventPublisher {
 
     private final ApplicationEventPublisher applicationEventPublisher;
 
+    /**
+     * Publishes the given domain event using Spring's application event infrastructure.
+     *
+     * @param event the domain event to be published
+     */
     @Override
     public void publish(DomainEvent event) {
         applicationEventPublisher.publishEvent(event);

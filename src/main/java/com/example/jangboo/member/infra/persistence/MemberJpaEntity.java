@@ -55,19 +55,28 @@ public class MemberJpaEntity {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
+    /**
+     * Sets the creation and update timestamps to the current time before the entity is persisted.
+     */
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 
+    /**
+     * Updates the {@code updatedAt} timestamp to the current time before the entity is updated in the database.
+     */
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
 
     /**
-     * Member (도메인) → Entity 변환
+     * Creates a MemberJpaEntity from a domain Member object by copying all relevant fields.
+     *
+     * @param member the domain Member object to convert
+     * @return a new MemberJpaEntity representing the given Member
      */
     public static MemberJpaEntity from(Member member) {
         return new MemberJpaEntity(
@@ -85,7 +94,9 @@ public class MemberJpaEntity {
     }
 
     /**
-     * Entity → Member (도메인) 변환
+     * Converts this JPA entity into a corresponding domain {@code Member} object.
+     *
+     * @return a {@code Member} instance with values copied from this entity
      */
     public Member toDomain() {
         return Member.builder()

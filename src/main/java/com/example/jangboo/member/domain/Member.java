@@ -2,8 +2,6 @@ package com.example.jangboo.member.domain;
 
 import com.example.jangboo.member.domain.vo.Email;
 import com.example.jangboo.member.domain.vo.PhoneNumber;
-import com.example.jangboo.member.exception.MemberErrorCode;
-import com.example.jangboo.shared.exception.BusinessException;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -26,10 +24,21 @@ public class Member {
     private LocalDateTime updatedAt;
 
     /**
-     * Member Aggregate
+     * Constructs a Member aggregate with the specified attributes.
      *
-     * <p>주의: Builder는 테스트/fixture 용도로만 사용하세요.
-     * 실제 회원 생성은 createNewMember() 팩토리 메서드를 통해 진행.</p>
+     * <p>Note: The builder is intended for testing or fixture purposes only.
+     * Use the {@link #createNewMember(String, String, SocialProvider, String)} factory method for actual member creation.</p>
+     *
+     * @param id the unique identifier of the member
+     * @param email the member's email address, or null if not registered
+     * @param phoneNumber the member's phone number, or null if not registered
+     * @param name the member's name
+     * @param nickname the member's nickname
+     * @param status the current status of the member
+     * @param socialProvider the social provider associated with the member
+     * @param socialId the unique identifier from the social provider
+     * @param createdAt the timestamp when the member was created
+     * @param updatedAt the timestamp when the member was last updated
      */
     @Builder
     public Member(
@@ -57,7 +66,13 @@ public class Member {
     }
 
     /**
-     * 회원가입용 도메인 팩토리 메서드
+     * Creates a new Member instance for registration with default ACTIVE status and no contact information.
+     *
+     * @param name the member's name
+     * @param nickname the member's nickname
+     * @param socialProvider the social authentication provider
+     * @param socialId the unique identifier from the social provider
+     * @return a new Member with null id, email, and phone number, and current timestamps
      */
     public static Member createNewMember(
             String name,
@@ -82,51 +97,64 @@ public class Member {
 
 
     /**
-     * 프로필 수정
+     * Updates the member's nickname if the member is active.
+     *
+     * @param nickname the new nickname to set
+     * @throws IllegalStateException if the member is not in ACTIVE status
      */
     public void updateProfile(String nickname) {
         if (!isActive()) {
-            throw new BusinessException(MemberErrorCode.CANNOT_UPDATE_DEACTIVATED);
+            throw new IllegalStateException("DEACTIVATED 상태에서는 프로필 수정이 불가합니다.");
         }
         this.nickname = nickname;
         this.updatedAt = LocalDateTime.now();
     }
 
     /**
-     * 이메일 등록 (소셜가입을 통해 최초 가입 후, 선택 사항)
+     * Registers an email address for the member if none is currently set.
+     *
+     * @param email the email address to register
+     * @throws IllegalStateException if an email is already registered for this member
      */
     public void registerEmail(Email email) {
         if (this.email != null) {
-            throw new BusinessException(MemberErrorCode.EMAIL_ALREADY_REGISTERED);
+            throw new IllegalStateException("이미 이메일이 등록된 회원입니다.");
         }
         this.email = email;
         this.updatedAt = LocalDateTime.now();
     }
 
     /**
-     * 핸드폰 번호 등록 (소셜가입을 통해 최초 가입 후, 선택 사항)
+     * Registers a phone number for the member if none is already set.
+     *
+     * @param phoneNumber the phone number to register
+     * @throws IllegalStateException if a phone number is already registered for this member
      */
     public void registerPhoneNumber(PhoneNumber phoneNumber) {
         if (this.phoneNumber != null) {
-            throw new BusinessException(MemberErrorCode.PHONE_ALREADY_REGISTERED);
+            throw new IllegalStateException("이미 전화번호가 등록된 회원입니다.");
         }
         this.phoneNumber = phoneNumber;
         this.updatedAt = LocalDateTime.now();
     }
 
     /**
-     * 휴면 전환
+     * Transitions the member's status to SLEEP if currently ACTIVE.
+     *
+     * @throws IllegalStateException if the member is not in ACTIVE status.
      */
     public void sleep() {
         if (!isActive()) {
-            throw new BusinessException(MemberErrorCode.SLEEP_ONLY_ACTIVE);
+            throw new IllegalStateException("휴면 전환은 ACTIVE 상태에서만 가능합니다.");
         }
         this.status = MemberStatus.SLEEP;
         this.updatedAt = LocalDateTime.now();
     }
 
     /**
-     * 탈퇴
+     * Deactivates the member and updates the last modified timestamp.
+     *
+     * Changes the member's status to {@code DEACTIVATED} and sets {@code updatedAt} to the current time.
      */
     public void deactivate() {
         this.status = MemberStatus.DEACTIVATED;
@@ -134,7 +162,9 @@ public class Member {
     }
 
     /**
-     * 활성 여부
+     * Checks if the member is currently active.
+     *
+     * @return {@code true} if the member's status is ACTIVE; {@code false} otherwise.
      */
     public boolean isActive() {
         return this.status == MemberStatus.ACTIVE;
