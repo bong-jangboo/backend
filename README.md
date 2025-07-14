@@ -53,7 +53,7 @@
 ## 🗂 디렉토리 구조
 
 ```
-com.example.jangboo
+com.bongjangboo
 ├── account/          # 계좌 등록 및 조회
 ├── auth/             # 로그인, 인증 처리
 ├── appoint/          # 역할 임명
