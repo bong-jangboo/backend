@@ -32,7 +32,7 @@ logging:
   level:
     root: ${LOGGING_LEVEL_ROOT:info}
     org.springframework.boot.autoconfigure: info # auto-report 컴팩트 (상세 스킵 숨김)
-    org.hibernate.SQL: ${LOGGING_LEVEL_ORG_HIBERNATE_SQL:debug} # JPA SQL 유지
+    org.hibernate.SQL: ${LOGGING_LEVEL_ORG_HIBERNATE_SQL:info} # JPA SQL 유지
     com.bongjangboo: ${LOGGING_LEVEL_APP:debug} # 앱 패키지: 디버깅용
   file:
     name: ${LOGGING_FILE_NAME:}
