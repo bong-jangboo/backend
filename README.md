@@ -2,6 +2,7 @@
 ![license](https://img.shields.io/github/license/bong-jangboo/backend?style=flat-square&color=blue)
 ![contributors](https://img.shields.io/github/contributors/bong-jangboo/backend?style=flat-square&color=blue)
 ![last-commit](https://img.shields.io/github/last-commit/bong-jangboo/backend?style=flat-square&color=blue)
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/bong-jangboo/backend?utm_source=oss&utm_medium=github&utm_campaign=bong-jangboo%2Fbackend&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
 
 **Bong-Jangboo**는 학생 단체의 회계 관리를 자동화하고 투명하게 운영할 수 있도록 지원하는 백엔드 시스템입니다.  
 오픈뱅킹 API, 영수증 OCR, 결재 워크플로우 등을 통합하여 회계·총무 업무의 디지털화를 실현합니다.
