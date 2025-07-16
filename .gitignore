@@ -43,3 +43,6 @@ src/main/resources/config/jwt.properties
 ### .env ###
 .env
 .env.*
+
+### AI tools ###
+.cursor/
