@@ -46,3 +46,5 @@ src/main/resources/config/jwt.properties
 
 ### AI tools ###
 .cursor/
+.cluade/
+.kiro/
