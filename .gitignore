@@ -49,3 +49,6 @@ src/main/resources/config/jwt.properties
 .claude/
 .kiro/
 CLAUDE.md
+
+### 프로젝트 관련 문서 ###
+docs/
