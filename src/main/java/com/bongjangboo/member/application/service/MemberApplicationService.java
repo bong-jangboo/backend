@@ -22,7 +22,7 @@ public class MemberApplicationService {
      * 회원 등록
      */
     @Transactional
-    public Long registerMember(RegisterMemberCommand command) {
+    public Member registerMember(RegisterMemberCommand command) {
         if(memberRepository.existsBySocial(command.getSocialProvider(), command.getSocialId())){
             throw new BusinessException(MemberErrorCode.DUPLICATE_SOCIAL_ID);
         }
@@ -46,7 +46,7 @@ public class MemberApplicationService {
                         .build()
         );
 
-        return saved.getId();
+        return saved;
     }
 
     /**

@@ -19,8 +19,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-
-public class MemberApplicationServiceTest {
+class MemberApplicationServiceTest {
 
     private MemberApplicationService service;
     private DomainEventPublisher eventPublisher;
@@ -35,7 +34,7 @@ public class MemberApplicationServiceTest {
 
     @Test
     @DisplayName("회원가입을 정상적으로 수행한다")
-    public void register() {
+    void register() {
         // Given
         RegisterMemberCommand command = RegisterMemberCommand.builder()
                 .name("채원")
@@ -55,16 +54,16 @@ public class MemberApplicationServiceTest {
         });
 
         // When
-        Long id = service.registerMember(command);
+        Member registerMember = service.registerMember(command);
 
         // Then
-        assertThat(id).isEqualTo(1L);
+        assertThat(registerMember.getName()).isEqualTo(command.getName());
         verify(eventPublisher).publish(any());
     }
 
     @Test
     @DisplayName("중복 소셜계정 가입실패")
-    public void register_duplicate() {
+    void register_duplicate() {
         // given
         RegisterMemberCommand command = RegisterMemberCommand.builder()
                 .name("채원")
@@ -88,10 +87,10 @@ public class MemberApplicationServiceTest {
         });
 
         // when
-        Long savedId = service.registerMember(command);
+        Member registerMember = service.registerMember(command);
 
         // then
-        assertThat(savedId).isEqualTo(1L);
+        assertThat(registerMember.getId()).isEqualTo(1L);
 
         // when - 두 번째 가입 시도
         // then
