@@ -8,8 +8,12 @@ public enum MemberErrorCode implements ErrorCode {
     DUPLICATE_SOCIAL_ID("DUPLICATE_SOCIAL_ID", "이미 가입된 소셜 계정입니다."),
     CANNOT_UPDATE_DEACTIVATED("CANNOT_UPDATE_DEACTIVATED", "DEACTIVATED 상태에서는 프로필 수정이 불가합니다."),
     EMAIL_ALREADY_REGISTERED("EMAIL_ALREADY_REGISTERED", "이미 이메일이 등록된 회원입니다."),
+    USER_EMAIL_NOT_REGISTERED("USER_EMAIL_NOT_REGISTERED", "사용자의 이메일이 등록되지 않았습니다. 먼저 이메일을 등록해주세요"),
     PHONE_ALREADY_REGISTERED("PHONE_ALREADY_REGISTERED", "이미 전화번호가 등록된 회원입니다."),
-    SLEEP_ONLY_ACTIVE("SLEEP_ONLY_ACTIVE", "휴면 전환은 ACTIVE 상태에서만 가능합니다.");
+    USER_PHONE_NOT_REGISTERED("USER_PHONE_NOT_REGISTERED", "사용자의 전화번호가 등록되지 않았습니다. 먼저 전화번호를 등록해주세요"),
+    SLEEP_ONLY_ACTIVE("SLEEP_ONLY_ACTIVE", "휴면 전환은 ACTIVE 상태에서만 가능합니다."),
+    EMAIL_ALREADY_IN_USE("EMAIL_ALREADY_IN_USE", "이미 사용 중인 이메일입니다."),
+    PHONE_ALREADY_IN_USE("PHONE_ALREADY_IN_USE", "이미 사용 중인 전화번호입니다.");
 
     private final String code;
     private final String message;

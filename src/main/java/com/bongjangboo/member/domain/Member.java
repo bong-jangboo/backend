@@ -82,20 +82,10 @@ public class Member {
 
 
     /**
-     * 프로필 수정
-     */
-    public void updateProfile(String nickname) {
-        if (!isActive()) {
-            throw new BusinessException(MemberErrorCode.CANNOT_UPDATE_DEACTIVATED);
-        }
-        this.nickname = nickname;
-        this.updatedAt = LocalDateTime.now();
-    }
-
-    /**
-     * 이메일 등록 (소셜가입을 통해 최초 가입 후, 선택 사항)
+     * 이메일 등록 (소셜가입을 통해 최초 가입 후, social provider가 정보 제공, 선택 사항)
      */
     public void registerEmail(Email email) {
+        checkIfActive();
         if (this.email != null) {
             throw new BusinessException(MemberErrorCode.EMAIL_ALREADY_REGISTERED);
         }
@@ -104,15 +94,65 @@ public class Member {
     }
 
     /**
-     * 핸드폰 번호 등록 (소셜가입을 통해 최초 가입 후, 선택 사항)
+     * 이메일 업데이트 ( 가입 이후 이메일 업데이트를 원할 때)
+     */
+    public void updateEmail(Email email) {
+        checkIfActive();
+        if (this.email == null) {
+            throw new BusinessException(MemberErrorCode.USER_EMAIL_NOT_REGISTERED);
+        }
+        this.email = email;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+
+
+    /**
+     * 핸드폰 번호 등록 (소셜가입을 통해 최초 가입 후, social provider가 정보 제공, 선택 사항)
      */
     public void registerPhoneNumber(PhoneNumber phoneNumber) {
+        checkIfActive();
         if (this.phoneNumber != null) {
             throw new BusinessException(MemberErrorCode.PHONE_ALREADY_REGISTERED);
         }
         this.phoneNumber = phoneNumber;
         this.updatedAt = LocalDateTime.now();
     }
+
+    /**
+     * 핸드폰 번호 업데이트
+     */
+    public void updatePhoneNumber(PhoneNumber phoneNumber) {
+        checkIfActive();
+        if (this.phoneNumber == null) {
+            throw new BusinessException(MemberErrorCode.USER_PHONE_NOT_REGISTERED);
+        }
+        this.phoneNumber = phoneNumber;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+
+    /**
+     * 닉네임 등록
+     */
+    public void registerNickname(String nickname) {
+        checkIfActive();
+
+        this.nickname = nickname;
+        this.updatedAt = LocalDateTime.now();
+
+    }
+
+    /**
+     * 닉네임 업데이트
+     */
+    public void updateNickname(String nickname) {
+        checkIfActive();
+
+        this.nickname = nickname;
+        this.updatedAt = LocalDateTime.now();
+    }
+
 
     /**
      * 휴면 전환
@@ -138,6 +178,13 @@ public class Member {
      */
     public boolean isActive() {
         return this.status == MemberStatus.ACTIVE;
+    }
+
+
+    private void checkIfActive() {
+        if(!isActive()) {
+            throw new BusinessException(MemberErrorCode.CANNOT_UPDATE_DEACTIVATED);
+        }
     }
 
 }

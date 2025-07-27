@@ -1,5 +1,6 @@
 package com.bongjangboo.member.application.command;
 
+import com.bongjangboo.member.domain.vo.Email;
 import com.bongjangboo.member.domain.vo.PhoneNumber;
 import lombok.Builder;
 import lombok.Value;
@@ -9,5 +10,6 @@ import lombok.Value;
 public class UpdateProfileCommand {
     Long memberId;
     String nickName;
+    Email email;
     PhoneNumber phoneNumber;
 }
