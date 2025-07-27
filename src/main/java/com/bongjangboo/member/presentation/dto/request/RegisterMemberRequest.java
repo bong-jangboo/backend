@@ -22,7 +22,7 @@ public class RegisterMemberRequest {
 
     @NotBlank(message = "닉네임은 필수입니다")
     @Size(min = 2, max = 15, message = "닉네임은 2-15자 사이어야 합니다")
-    private String nickName;
+    private String nickname;
 
     @NotNull(message = "소셜 제공자는 필수입니다")
     private SocialProvider socialProvider;
@@ -35,7 +35,7 @@ public class RegisterMemberRequest {
     public RegisterMemberCommand toCommand() {
         return RegisterMemberCommand.builder()
                 .name(this.name)
-                .nickname(this.nickName)
+                .nickname(this.nickname)
                 .socialProvider(this.socialProvider)
                 .socialId(this.socialId)
                 .build();

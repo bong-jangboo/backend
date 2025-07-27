@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class UpdateProfileRequest {
 
     @Size(min = 2, max = 15, message = "닉네임은 2-15자 사이여야 합니다")
-    private String nickName;
+    private String nickname;
 
     @jakarta.validation.constraints.Email(message = "올바른 이메일 형식이 아닙니다")
     private String email;
@@ -24,13 +24,13 @@ public class UpdateProfileRequest {
     // 최소 하나의 필드는 있어야 함
     @AssertTrue(message = "수정할 정보를 최소 하나는 입력해주세요")
     private boolean isValid() {
-        return nickName != null || email != null || phoneNumber != null;
+        return nickname != null || email != null || phoneNumber != null;
     }
 
     public UpdateProfileCommand toCommand(Long memberId) {
         return UpdateProfileCommand.builder()
                 .memberId(memberId)
-                .nickName(this.nickName)
+                .nickname(this.nickname)
                 .email(this.email != null ? new Email(this.email) : null)
                 .phoneNumber(this.phoneNumber != null ? new PhoneNumber(this.phoneNumber) : null)
                 .build();

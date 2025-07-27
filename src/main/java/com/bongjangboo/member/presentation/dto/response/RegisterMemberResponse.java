@@ -4,9 +4,11 @@ import com.bongjangboo.member.domain.Member;
 import com.bongjangboo.member.domain.MemberStatus;
 import com.bongjangboo.member.domain.SocialProvider;
 import lombok.Builder;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+@Getter
 @Builder
 public class RegisterMemberResponse {
     private Long id;

@@ -9,7 +9,7 @@ import lombok.Value;
 @Builder
 public class UpdateProfileCommand {
     Long memberId;
-    String nickName;
+    String nickname;
     Email email;
     PhoneNumber phoneNumber;
 }

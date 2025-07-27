@@ -59,10 +59,10 @@ public class MemberApplicationService {
     @Transactional
     public Member updateProfile(UpdateProfileCommand command) {
         Member member = findMemberById(command.getMemberId());
-        // todo : 다중 필드 에러 집계 반환 구현 후 도입
+        // TODO : 다중 필드 에러 집계 반환 구현 후 도입
         // null 체크 후 선택적 업데이트 (PATCH 방식)
-        if (command.getNickName() != null) {
-            member.updateNickname(command.getNickName());
+        if (command.getNickname() != null) {
+            member.updateNickname(command.getNickname());
         }
         if (command.getEmail() != null) {
             if(memberRepository.existsByEmailAndIdNot(command.getEmail(), command.getMemberId())) {

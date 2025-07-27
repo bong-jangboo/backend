@@ -56,8 +56,15 @@ public class GlobalExceptionHandler {
                 e.getErrorCode().getCode(),
                 e.getMessage()
         );
+
+        // 특정 에러 코드에 대해 다른 HTTP 상태 코드 반환
+        HttpStatus status = switch (e.getErrorCode().getCode()) {
+            case "MEMBER_NOT_FOUND" -> HttpStatus.NOT_FOUND;
+            default -> HttpStatus.BAD_REQUEST;
+        };
+
         return ResponseUtil.failure(
-                HttpStatus.BAD_REQUEST,
+                status,
                 e.getErrorCode(),
                 e.getMessage()
         );
@@ -170,6 +177,59 @@ public class GlobalExceptionHandler {
         return ResponseUtil.failure(
                 HttpStatus.METHOD_NOT_ALLOWED,
                 CommonErrorCode.METHOD_NOT_ALLOWED
+        );
+    }
+
+    /**
+     * 지원하지 않는 Content-Type (415)
+     */
+    @ExceptionHandler(org.springframework.web.HttpMediaTypeNotSupportedException.class)
+    public ResponseEntity<ApiResponse<Void>> handleHttpMediaTypeNotSupportedException(
+            org.springframework.web.HttpMediaTypeNotSupportedException e,
+            HttpServletRequest request
+    ) {
+        log.warn("""
+            [HttpMediaTypeNotSupportedException]
+            Path   : {}
+            Method : {}
+            Message: {}
+            """,
+                request.getRequestURI(),
+                request.getMethod(),
+                e.getMessage()
+        );
+
+        return ResponseUtil.failure(
+                HttpStatus.UNSUPPORTED_MEDIA_TYPE,
+                CommonErrorCode.UNSUPPORTED_MEDIA_TYPE
+        );
+    }
+
+    /**
+     * 파라미터 타입 변환 실패 (400)
+     */
+    @ExceptionHandler(org.springframework.web.method.annotation.MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiResponse<Void>> handleMethodArgumentTypeMismatchException(
+            org.springframework.web.method.annotation.MethodArgumentTypeMismatchException e,
+            HttpServletRequest request
+    ) {
+        log.warn("""
+            [MethodArgumentTypeMismatchException]
+            Path   : {}
+            Method : {}
+            Parameter: {}
+            Message: {}
+            """,
+                request.getRequestURI(),
+                request.getMethod(),
+                e.getName(),
+                e.getMessage()
+        );
+
+        return ResponseUtil.failure(
+                HttpStatus.BAD_REQUEST,
+                CommonErrorCode.INVALID_INPUT,
+                "잘못된 파라미터 형식입니다: " + e.getName()
         );
     }
 
