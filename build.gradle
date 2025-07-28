@@ -53,7 +53,7 @@ test {
 
 
 // JaCoCo 테스트 리포트 설정
-jacocoTestReport {
+tasks.named('jacocoTestReport', JacocoReport) {
     dependsOn test
     reports {
         xml.required = true
@@ -61,31 +61,22 @@ jacocoTestReport {
         html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
     }
 
-    // 커버리지 대상에서 제외할 클래스 설정
-    afterEvaluate {
-        classDirectories.setFrom(files(classDirectories.files.collect {
-            fileTree(dir: it, exclude: [
-                    // 메인 애플리케이션 클래스
-                    '**/BongJangbooApplication.class',
-
-                    // 설정 클래스들
-                    '**/config/**',
-                    '**/configuration/**',
-
-                    // DTO 클래스들 (비즈니스 로직 없음)
-                    '**/dto/**',
-                    '**/request/**',
-                    '**/response/**',
-
-                    // 예외 클래스들
-                    '**/exception/**',
-
-                    // 상수 클래스들
-                    '**/constant/**',
-                    '**/enums/**'
-            ])
-        }))
-    }
+    // Provider를 통한 지연 계산 (Configuration Cache 호환)
+    classDirectories.setFrom(
+            provider {
+                sourceSets.main.output.asFileTree.matching {
+                    exclude '**/BongJangbooApplication.class'
+                    exclude '**/config/**'
+                    exclude '**/configuration/**'
+                    exclude '**/dto/**'
+                    exclude '**/request/**'
+                    exclude '**/response/**'
+                    exclude '**/exception/**'
+                    exclude '**/constant/**'
+                    exclude '**/enums/**'
+                }
+            }
+    )
 }
 
 // JaCoCo 커버리지 검증 설정
