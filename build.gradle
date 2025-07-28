@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.3.3'
     id 'io.spring.dependency-management' version '1.1.6'
+    id 'jacoco'
 }
 
 group = 'com.bongjangboo'
@@ -11,6 +12,10 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
     }
+}
+
+jacoco {
+    toolVersion = "0.8.13"
 }
 
 repositories {
@@ -45,3 +50,95 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+
+// JaCoCo 테스트 리포트 설정
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+    }
+
+    // 커버리지 대상에서 제외할 클래스 설정
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    // 메인 애플리케이션 클래스
+                    '**/BongJangbooApplication.class',
+
+                    // 설정 클래스들
+                    '**/config/**',
+                    '**/configuration/**',
+
+                    // DTO 클래스들 (비즈니스 로직 없음)
+                    '**/dto/**',
+                    '**/request/**',
+                    '**/response/**',
+
+                    // 예외 클래스들
+                    '**/exception/**',
+
+                    // 상수 클래스들
+                    '**/constant/**',
+                    '**/enums/**'
+            ])
+        }))
+    }
+}
+
+// JaCoCo 커버리지 검증 설정
+jacocoTestCoverageVerification {
+    dependsOn jacocoTestReport
+    violationRules {
+        // 전체 프로젝트 커버리지 규칙
+        rule {
+            limit {
+                minimum = 0.80  // 전체 80% 이상
+            }
+        }
+
+        // 도메인 계층 커버리지 규칙 (가장 중요)
+        rule {
+            element = 'PACKAGE'
+            includes = ['**/domain/**']
+            limit {
+                minimum = 0.95  // 도메인 95% 이상
+            }
+        }
+
+        // 애플리케이션 계층 커버리지 규칙
+        rule {
+            element = 'PACKAGE'
+            includes = ['**/application/**']
+            limit {
+                minimum = 0.90  // 애플리케이션 90% 이상
+            }
+        }
+
+        // 인프라 계층 커버리지 규칙
+        rule {
+            element = 'PACKAGE'
+            includes = ['**/infrastructure/**', '**/infra/**']
+            limit {
+                minimum = 0.80  // 인프라 80% 이상
+            }
+        }
+
+        // 프레젠테이션 계층 커버리지 규칙
+        rule {
+            element = 'PACKAGE'
+            includes = ['**/presentation/**']
+            limit {
+                minimum = 0.85  // 프레젠테이션 85% 이상
+            }
+        }
+    }
+}
+
+// 테스트 실행 시 자동으로 커버리지 리포트 생성
+test.finalizedBy jacocoTestReport
+
+// 빌드 검증 시 커버리지 검증 포함
+check.dependsOn jacocoTestCoverageVerification
