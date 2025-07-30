@@ -7,23 +7,21 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
-import java.util.regex.Pattern;
-
 @Value
 @NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 @Embeddable
-public class PhoneNumber {
-
-    private static final Pattern PHONE_PATTERN =
-            Pattern.compile("^010-?\\d{4}-?\\d{4}$");
-
+public class Nickname {
     String value;
 
-    public PhoneNumber(String value) {
-        if (value == null || !PHONE_PATTERN.matcher(value).matches()) {
-            throw new BusinessException(MemberErrorCode.PHONE_INVALID_FORMAT);
-        }
+    // TODO : 도메인 코드 nickname 타입 VO로 변경
+
+    public Nickname(String value) {
+        if(value ==null || value.trim().isEmpty())
+            throw new BusinessException(MemberErrorCode.NICKNAME_INVALID_FORMAT);
         this.value = value;
     }
+
+
+    // 추후 닉네임과 관련된 정책 추가 가능
 
 }

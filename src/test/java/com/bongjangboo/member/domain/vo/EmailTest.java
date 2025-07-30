@@ -1,5 +1,7 @@
 package com.bongjangboo.member.domain.vo;
 
+import com.bongjangboo.member.exception.MemberErrorCode;
+import com.bongjangboo.shared.exception.BusinessException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -55,8 +57,8 @@ class EmailTest {
         void createEmail_InvalidFormat_ThrowsException(String invalidEmail) {
             // when & then
             assertThatThrownBy(() -> new Email(invalidEmail))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("Invalid email");
+                    .isInstanceOf(BusinessException.class)
+                    .hasMessage(MemberErrorCode.EMAIL_INVALID_FORMAT.getMessage());
         }
 
         @Test
@@ -64,8 +66,8 @@ class EmailTest {
         void createEmail_NullValue_ThrowsException() {
             // when & then
             assertThatThrownBy(() -> new Email(null))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("Invalid email");
+                    .isInstanceOf(BusinessException.class)
+                    .hasMessage(MemberErrorCode.EMAIL_INVALID_FORMAT.getMessage());
         }
     }
 
@@ -82,8 +84,7 @@ class EmailTest {
             Email email2 = new Email(emailValue);
 
             // when & then
-            assertThat(email1).isEqualTo(email2);
-            assertThat(email1.hashCode()).isEqualTo(email2.hashCode());
+            assertThat(email1).isEqualTo(email2).hasSameHashCodeAs(email2);
         }
 
         @Test

@@ -23,6 +23,39 @@ import static org.assertj.core.api.Assertions.*;
 class MemberTest {
 
     @Nested
+    @DisplayName("학습 및 리팩토링 검증")
+    class TempTest {
+
+
+        @Test
+        @DisplayName("빌더로 객체 생성시 값이 비면??")
+        void temp() {
+            Member member = Member.builder()
+                    .id(1L).build();
+            System.out.println(member.getStatus());
+            assertThat(member.getStatus()).isNull();
+        }
+        // null로 자동으로 빌더가 채우나보네
+
+
+        @Test
+        @DisplayName("애그리거트 루트에다가 @EqualsAndHashCode 사용")
+        void equalsAndHash() {
+            // 서로 다름
+            Member member1 = Member.createNewMember("홍길동", "길동이", SocialProvider.KAKAO, "kakao123");
+            Member member2 = Member.createNewMember("고길동", "길동이", SocialProvider.KAKAO, "kakao123");
+
+            // 영속화 이전에 사용하면 null 이라서 같은 객체로 처리됨
+            // 컬렉션 사용등 문제 발생 따라서 (@EqualsAndHashCode 삭제해야함)
+            // 삭제한 상태로 테스트 통과
+            assertThat(member1).isNotEqualTo(member2);
+        }
+    }
+
+
+
+
+    @Nested
     @DisplayName("회원 생성 테스트")
     class CreateNewMemberTest {
 
@@ -114,7 +147,7 @@ class MemberTest {
             // when & then
             assertThatThrownBy(() -> member.updateEmail(email))
                     .isInstanceOf(BusinessException.class)
-                    .hasMessageContaining(MemberErrorCode.USER_EMAIL_NOT_REGISTERED.getMessage());
+                    .hasMessageContaining(MemberErrorCode.MEMBER_EMAIL_NOT_REGISTERED.getMessage());
         }
 
         @Test
@@ -287,61 +320,4 @@ class MemberTest {
         }
     }
 
-    @Nested
-    @DisplayName("동등성 테스트")
-    class EqualityTest {
-
-        @Test
-        @DisplayName("성공: ID가 같은 회원은 동등하다")
-        void equals_SameId_ReturnsTrue() {
-            // given
-            Member member1 = Member.builder()
-                    .id(1L)
-                    .name("홍길동")
-                    .nickname("길동이")
-                    .socialProvider(SocialProvider.KAKAO)
-                    .socialId("kakao123")
-                    .status(MemberStatus.ACTIVE)
-                    .build();
-
-            Member member2 = Member.builder()
-                    .id(1L)
-                    .name("김철수")
-                    .nickname("철수야")
-                    .socialProvider(SocialProvider.GOOGLE)
-                    .socialId("google456")
-                    .status(MemberStatus.SLEEP)
-                    .build();
-
-            // when & then
-            assertThat(member1).isEqualTo(member2);
-            assertThat(member1.hashCode()).isEqualTo(member2.hashCode());
-        }
-
-        @Test
-        @DisplayName("성공: ID가 다른 회원은 동등하지 않다")
-        void equals_DifferentId_ReturnsFalse() {
-            // given
-            Member member1 = Member.builder()
-                    .id(1L)
-                    .name("홍길동")
-                    .nickname("길동이")
-                    .socialProvider(SocialProvider.KAKAO)
-                    .socialId("kakao123")
-                    .status(MemberStatus.ACTIVE)
-                    .build();
-
-            Member member2 = Member.builder()
-                    .id(2L)
-                    .name("홍길동")
-                    .nickname("길동이")
-                    .socialProvider(SocialProvider.KAKAO)
-                    .socialId("kakao123")
-                    .status(MemberStatus.ACTIVE)
-                    .build();
-
-            // when & then
-            assertThat(member1).isNotEqualTo(member2);
-        }
-    }
 }

@@ -27,7 +27,7 @@ public class RegisterMemberRequest {
     @NotNull(message = "소셜 제공자는 필수입니다")
     private SocialProvider socialProvider;
 
-    @NotNull(message = "소셜 ID는 필수입니다")
+    @NotBlank(message = "소셜 ID는 필수입니다")
     private String socialId;
 
 

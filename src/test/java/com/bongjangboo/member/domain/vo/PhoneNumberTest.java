@@ -1,5 +1,7 @@
 package com.bongjangboo.member.domain.vo;
 
+import com.bongjangboo.member.exception.MemberErrorCode;
+import com.bongjangboo.shared.exception.BusinessException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -56,8 +58,8 @@ class PhoneNumberTest {
         void createPhoneNumber_InvalidFormat_ThrowsException(String invalidPhoneNumber) {
             // when & then
             assertThatThrownBy(() -> new PhoneNumber(invalidPhoneNumber))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("Invalid phone number format. ex) 010-1234-5678");
+                    .isInstanceOf(BusinessException.class)
+                    .hasMessage(MemberErrorCode.PHONE_INVALID_FORMAT.getMessage());
         }
 
         @Test
@@ -65,8 +67,8 @@ class PhoneNumberTest {
         void createPhoneNumber_NullValue_ThrowsException() {
             // when & then
             assertThatThrownBy(() -> new PhoneNumber(null))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("Invalid phone number format. ex) 010-1234-5678");
+                    .isInstanceOf(BusinessException.class)
+                    .hasMessage(MemberErrorCode.PHONE_INVALID_FORMAT.getMessage());
         }
     }
 
@@ -84,7 +86,7 @@ class PhoneNumberTest {
 
             // when & then
             assertThat(phone1).isEqualTo(phone2);
-            assertThat(phone1.hashCode()).isEqualTo(phone2.hashCode());
+            assertThat(phone1.hashCode()).hasSameHashCodeAs(phone2.hashCode());
         }
 
         @Test
