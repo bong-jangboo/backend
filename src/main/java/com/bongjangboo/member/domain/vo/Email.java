@@ -18,7 +18,7 @@ public class Email {
     String value;
 
     public Email(String value) {
-        if (value == null || value.isEmpty() ||  !EMAIL_PATTERN.matcher(value).matches()) {
+        if (value == null || value.trim().isEmpty() ||  !EMAIL_PATTERN.matcher(value).matches()) {
             throw new BusinessException(MemberErrorCode.EMAIL_INVALID_FORMAT);
         }
         this.value = value.trim();

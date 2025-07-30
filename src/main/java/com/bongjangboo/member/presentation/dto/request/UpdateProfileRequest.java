@@ -17,13 +17,13 @@ public class UpdateProfileRequest {
     @jakarta.validation.constraints.Email(message = "올바른 이메일 형식이 아닙니다")
     private String email;
 
-    @Pattern(regexp = "^010-\\d{4}-\\d{4}$", message = "올바른 전화번호 형식이 아닙니다")
+    @Pattern(regexp = "^010-?\\d{4}-?\\d{4}$", message = "올바른 전화번호 형식이 아닙니다")
     private String phoneNumber;
 
 
     // 최소 하나의 필드는 있어야 함
     @AssertTrue(message = "수정할 정보를 최소 하나는 입력해주세요")
-    private boolean isValid() {
+    private boolean isAtLeastOneFieldPresent() {
         return nickname != null || email != null || phoneNumber != null;
     }
 

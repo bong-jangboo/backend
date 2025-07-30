@@ -61,7 +61,7 @@ class MemberRepositoryImplTest {
         @DisplayName("성공: 회원을 저장하고 ID로 조회한다")
         void save_AndFindById_Success() {
             // given
-            Member member = createTestMember("kakao123", "test@example.com", "010-1234-5678");
+            Member member = createTestMember("kakao123", "test@example.com", "01012345678");
 
             // when
             Member savedMember = memberRepository.save(member);
@@ -71,7 +71,7 @@ class MemberRepositoryImplTest {
             assertThat(foundMember).isPresent();
             assertThat(foundMember.get().getName()).isEqualTo("홍길동");
             assertThat(foundMember.get().getEmail().getValue()).isEqualTo("test@example.com");
-            assertThat(foundMember.get().getPhoneNumber().getValue()).isEqualTo("010-1234-5678");
+            assertThat(foundMember.get().getPhoneNumber().getValue()).isEqualTo("01012345678");
             assertThat(foundMember.get().getSocialProvider()).isEqualTo(SocialProvider.KAKAO);
             assertThat(foundMember.get().getSocialId()).isEqualTo("kakao123");
         }
@@ -203,12 +203,12 @@ class MemberRepositoryImplTest {
         @DisplayName("성공: 존재하는 전화번호의 중복 여부를 확인한다")
         void existsByPhoneNumber_ExistingPhone_ReturnsTrue() {
             // given
-            Member member = createTestMember("kakao004", null, "010-1111-2222");
+            Member member = createTestMember("kakao004", null, "01011112222");
             memberRepository.save(member);
             entityManager.flush();
 
             // when
-            boolean exists = memberRepository.existsByPhoneNumber(new PhoneNumber("010-1111-2222"));
+            boolean exists = memberRepository.existsByPhoneNumber(new PhoneNumber("01011112222"));
 
             // then
             assertThat(exists).isTrue();
@@ -218,7 +218,7 @@ class MemberRepositoryImplTest {
         @DisplayName("성공: 존재하지 않는 전화번호의 중복 여부를 확인한다")
         void existsByPhoneNumber_NotExistingPhone_ReturnsFalse() {
             // when
-            boolean exists = memberRepository.existsByPhoneNumber(new PhoneNumber("010-9999-8888"));
+            boolean exists = memberRepository.existsByPhoneNumber(new PhoneNumber("01099998888"));
 
             // then
             assertThat(exists).isFalse();
@@ -228,17 +228,17 @@ class MemberRepositoryImplTest {
         @DisplayName("성공: 자기 자신을 제외한 전화번호 중복 검사를 한다")
         void existsByPhoneNumberAndIdNot_ExcludingSelf_ReturnsCorrectResult() {
             // given
-            Member member1 = createTestMember("kakao005", null, "010-3333-4444");
-            Member member2 = createTestMember("kakao006", null, "010-5555-6666");
+            Member member1 = createTestMember("kakao005", null, "01033334444");
+            Member member2 = createTestMember("kakao006", null, "01055556666");
             Member savedMember1 = memberRepository.save(member1);
             Member savedMember2 = memberRepository.save(member2);
             entityManager.flush();
 
             // when
             boolean existsExcludingSelf = memberRepository.existsByPhoneNumberAndIdNot(
-                    new PhoneNumber("010-3333-4444"), savedMember1.getId());
+                    new PhoneNumber("01033334444"), savedMember1.getId());
             boolean existsIncludingOther = memberRepository.existsByPhoneNumberAndIdNot(
-                    new PhoneNumber("010-5555-6666"), savedMember1.getId());
+                    new PhoneNumber("01055556666"), savedMember1.getId());
 
             // then
             assertThat(existsExcludingSelf).isFalse(); // 자기 자신은 제외되므로 false
@@ -254,7 +254,7 @@ class MemberRepositoryImplTest {
         @DisplayName("성공: 도메인 모델이 JPA 엔티티로 정확히 변환된다")
         void domainToEntity_ConversionCorrect() {
             // given
-            Member member = createTestMember("kakao007", "convert@example.com", "010-7777-8888");
+            Member member = createTestMember("kakao007", "convert@example.com", "01077778888");
 
             // when
             Member savedMember = memberRepository.save(member);
@@ -263,7 +263,7 @@ class MemberRepositoryImplTest {
             assertThat(savedMember.getId()).isNotNull(); // JPA가 ID를 생성함
             assertThat(savedMember.getName()).isEqualTo("홍길동");
             assertThat(savedMember.getEmail().getValue()).isEqualTo("convert@example.com");
-            assertThat(savedMember.getPhoneNumber().getValue()).isEqualTo("010-7777-8888");
+            assertThat(savedMember.getPhoneNumber().getValue()).isEqualTo("01077778888");
             assertThat(savedMember.getCreatedAt()).isNotNull();
             assertThat(savedMember.getUpdatedAt()).isNotNull();
         }

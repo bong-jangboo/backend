@@ -23,7 +23,7 @@ public class PhoneNumber {
         if (value == null || !PHONE_PATTERN.matcher(value).matches()) {
             throw new BusinessException(MemberErrorCode.PHONE_INVALID_FORMAT);
         }
-        this.value = value;
+        this.value = value.replace("-", "");
     }
 
 }

@@ -188,7 +188,7 @@ class MemberControllerTest {
                     .andExpect(jsonPath("$.data.name").value("홍길동"))
                     .andExpect(jsonPath("$.data.nickname").value("길동이"))
                     .andExpect(jsonPath("$.data.email").value("test@example.com"))
-                    .andExpect(jsonPath("$.data.phoneNumber").value("010-1234-5678"));
+                    .andExpect(jsonPath("$.data.phoneNumber").value("01012345678"));
         }
 
         @Test

@@ -25,6 +25,15 @@ class PhoneNumberTest {
     @DisplayName("전화번호 생성 테스트")
     class PhoneNumberCreationTest {
 
+        @Test
+        @DisplayName("성공: - 이 제거된 형태로 value를 저장한다")
+        void phoneNumberNormalize_Success() {
+            String before = "010-1234-5678";
+            PhoneNumber after =  new PhoneNumber(before);
+
+            assertThat(after.getValue()).isEqualTo("01012345678");
+        }
+
         @ParameterizedTest
         @ValueSource(strings = {
                 "010-1234-5678",
@@ -39,7 +48,9 @@ class PhoneNumberTest {
             PhoneNumber phoneNumber = new PhoneNumber(validPhoneNumber);
 
             // then
-            assertThat(phoneNumber.getValue()).isEqualTo(validPhoneNumber);
+            // 정규화된 형태(하이픈 제거)로 저장되는지 검증
+            String expectedNormalized = validPhoneNumber.replace("-", "");
+            assertThat(phoneNumber.getValue()).isEqualTo(expectedNormalized);
         }
 
         @ParameterizedTest
@@ -109,6 +120,18 @@ class PhoneNumberTest {
             // when & then
             assertThat(phone).isNotEqualTo(null);
         }
+
+        @Test
+        @DisplayName("성공: 정규화로 인해 다른 형태의 입력도 같은 값으로 동등하다")
+        void equals_NormalizedValues_ReturnsTrue() {
+            // given
+            PhoneNumber phone1 = new PhoneNumber("010-1234-5678");  // 하이픈 있는 형태
+            PhoneNumber phone2 = new PhoneNumber("01012345678");    // 하이픈 없는 형태
+
+            // when & then
+            assertThat(phone1).isEqualTo(phone2);
+            assertThat(phone1.hashCode()).hasSameHashCodeAs(phone2.hashCode());
+        }
     }
 
     @Nested
@@ -126,7 +149,9 @@ class PhoneNumberTest {
             String retrievedValue = phoneNumber.getValue();
 
             // then
-            assertThat(retrievedValue).isEqualTo(originalValue);
+            // 정규화된 값으로 저장되므로 하이픈이 제거된 상태로 반환
+            String expectedNormalized = originalValue.replace("-", "");
+            assertThat(retrievedValue).isEqualTo(expectedNormalized);
         }
     }
 }

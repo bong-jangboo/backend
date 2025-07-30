@@ -396,6 +396,7 @@ class MemberApplicationServiceTest {
 
             // then
             then(memberRepository).should().save(testMember);
+            assertThat(testMember.getStatus()).isEqualTo(MemberStatus.DEACTIVATED);
         }
 
         @Test
@@ -414,6 +415,7 @@ class MemberApplicationServiceTest {
 
             // then
             then(memberRepository).should().save(testMember);
+            assertThat(testMember.getStatus()).isEqualTo(MemberStatus.SLEEP);
         }
     }
 }
