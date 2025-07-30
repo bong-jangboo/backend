@@ -7,7 +7,8 @@ public enum CommonErrorCode implements ErrorCode{
     PERMISSION_DENIED("PERMISSION_DENIED", "권한이 없습니다."),
     JSON_PARSE_ERROR("JSON_PARSE_ERROR", "잘못된 JSON 형식입니다. 파싱에 실패했습니다."),
     NOT_FOUND("NOT_FOUND", "요청하신 리소스를 찾을 수 없습니다."),
-    METHOD_NOT_ALLOWED("METHOD_NOT_ALLOWED", "허용되지 않은 HTTP 메서드입니다.");
+    METHOD_NOT_ALLOWED("METHOD_NOT_ALLOWED", "허용되지 않은 HTTP 메서드입니다."),
+    UNSUPPORTED_MEDIA_TYPE("UNSUPPORTED_MEDIA_TYPE", "지원하지 않는 Content-Type입니다.");
 
     private final String code;
     private final String message;

@@ -1,5 +1,7 @@
 package com.bongjangboo.member.domain.vo;
 
+import com.bongjangboo.member.exception.MemberErrorCode;
+import com.bongjangboo.shared.exception.BusinessException;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -19,9 +21,9 @@ public class PhoneNumber {
 
     public PhoneNumber(String value) {
         if (value == null || !PHONE_PATTERN.matcher(value).matches()) {
-            throw new IllegalArgumentException("Invalid phone number format. ex) 010-1234-5678");
+            throw new BusinessException(MemberErrorCode.PHONE_INVALID_FORMAT);
         }
-        this.value = value;
+        this.value = value.replace("-", "");
     }
 
 }

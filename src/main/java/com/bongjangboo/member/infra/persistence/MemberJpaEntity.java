@@ -86,20 +86,21 @@ public class MemberJpaEntity {
 
     /**
      * Entity → Member (도메인) 변환
+     * builder() 대신 of 사용
      */
     public Member toDomain() {
-        return Member.builder()
-                .id(id)
-                .email(email)
-                .phoneNumber(phoneNumber)
-                .name(name)
-                .nickname(nickname)
-                .status(status)
-                .socialProvider(socialProvider)
-                .socialId(socialId)
-                .createdAt(createdAt)
-                .updatedAt(updatedAt)
-                .build();
+        return Member.reconstruct(
+                id,
+                email,
+                phoneNumber,
+                name,
+                nickname,
+                status,
+                socialProvider,
+                socialId,
+                createdAt,
+                updatedAt
+        );
     }
 
 }

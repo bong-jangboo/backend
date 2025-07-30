@@ -2,6 +2,7 @@ package com.bongjangboo.shared.exception;
 
 import com.bongjangboo.shared.response.ApiError;
 import com.bongjangboo.shared.response.ApiResponse;
+import com.bongjangboo.shared.response.ResponseUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -43,7 +44,7 @@ public class GlobalExceptionHandler {
      * 비즈니스 예외
      */
     @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<ApiResponse<?>> handleBusinessException(BusinessException e, HttpServletRequest request) {
+    public ResponseEntity<ApiResponse<Void>> handleBusinessException(BusinessException e, HttpServletRequest request) {
         log.warn("""
                 [BusinessException]
                 Path   : {}
@@ -56,14 +57,17 @@ public class GlobalExceptionHandler {
                 e.getMessage()
         );
 
-        ApiError error = ApiError.builder()
-                .code(e.getErrorCode().getCode())
-                .message(e.getErrorCode().getMessage())
-                .build();
+        // 특정 에러 코드에 대해 다른 HTTP 상태 코드 반환
+        HttpStatus status = switch (e.getErrorCode().getCode()) {
+            case "MEMBER_NOT_FOUND" -> HttpStatus.NOT_FOUND;
+            default -> HttpStatus.BAD_REQUEST;
+        };
 
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(ApiResponse.failure(error));
+        return ResponseUtil.failure(
+                status,
+                e.getErrorCode(),
+                e.getMessage()
+        );
     }
 
 
@@ -71,7 +75,7 @@ public class GlobalExceptionHandler {
      * 검증 오류
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<?>> handleValidationException(MethodArgumentNotValidException e, HttpServletRequest request) {
+    public ResponseEntity<ApiResponse<Void>> handleValidationException(MethodArgumentNotValidException e, HttpServletRequest request) {
         List<ApiError.FieldError> fieldErrors = e.getBindingResult().getFieldErrors().stream()
                 .map(field -> ApiError.FieldError.builder()
                         .field(field.getField())
@@ -90,15 +94,11 @@ public class GlobalExceptionHandler {
                 fieldErrors
         );
 
-        ApiError error = ApiError.builder()
-                .code(CommonErrorCode.INVALID_INPUT.getCode())
-                .message(CommonErrorCode.INVALID_INPUT.getMessage())
-                .fieldErrors(fieldErrors)
-                .build();
-
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(ApiResponse.failure(error));
+        return ResponseUtil.failureWithFieldErrors(
+                HttpStatus.BAD_REQUEST,
+                CommonErrorCode.INVALID_INPUT,
+                fieldErrors
+        );
     }
 
     /**
@@ -107,7 +107,7 @@ public class GlobalExceptionHandler {
      * → 클라이언트의 잘못된 요청으로 판단하여 400 응답 처리
      */
     @ExceptionHandler(org.springframework.http.converter.HttpMessageNotReadableException.class)
-    public ResponseEntity<ApiResponse<?>> handleHttpMessageNotReadableException(
+    public ResponseEntity<ApiResponse<Void>> handleHttpMessageNotReadableException(
             org.springframework.http.converter.HttpMessageNotReadableException e,
             HttpServletRequest request
     ) {
@@ -122,14 +122,10 @@ public class GlobalExceptionHandler {
                 e.getMessage()
         );
 
-        ApiError error = ApiError.builder()
-                .code(CommonErrorCode.JSON_PARSE_ERROR.getCode())
-                .message(CommonErrorCode.JSON_PARSE_ERROR.getMessage())
-                .build();
-
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(ApiResponse.failure(error));
+        return ResponseUtil.failure(
+                HttpStatus.BAD_REQUEST,
+                CommonErrorCode.JSON_PARSE_ERROR
+        );
     }
 
 
@@ -137,7 +133,7 @@ public class GlobalExceptionHandler {
      * 잘못된 URL 요청 (404)
      */
     @ExceptionHandler(org.springframework.web.servlet.NoHandlerFoundException.class)
-    public ResponseEntity<ApiResponse<?>> handleNoHandlerFoundException(
+    public ResponseEntity<ApiResponse<Void>> handleNoHandlerFoundException(
             org.springframework.web.servlet.NoHandlerFoundException e,
             HttpServletRequest request
     ) {
@@ -152,14 +148,10 @@ public class GlobalExceptionHandler {
                 e.getMessage()
         );
 
-        ApiError error = ApiError.builder()
-                .code(CommonErrorCode.NOT_FOUND.getCode())
-                .message(CommonErrorCode.NOT_FOUND.getMessage())
-                .build();
-
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(ApiResponse.failure(error));
+        return ResponseUtil.failure(
+                HttpStatus.NOT_FOUND,
+                CommonErrorCode.NOT_FOUND
+        );
     }
 
 
@@ -167,7 +159,7 @@ public class GlobalExceptionHandler {
      * 잘못된 HTTP 메서드 (405)
      */
     @ExceptionHandler(org.springframework.web.HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<ApiResponse<?>> handleMethodNotAllowedException(
+    public ResponseEntity<ApiResponse<Void>> handleMethodNotAllowedException(
             org.springframework.web.HttpRequestMethodNotSupportedException e,
             HttpServletRequest request
     ) {
@@ -182,14 +174,63 @@ public class GlobalExceptionHandler {
                 e.getMessage()
         );
 
-        ApiError error = ApiError.builder()
-                .code(CommonErrorCode.METHOD_NOT_ALLOWED.getCode())
-                .message(CommonErrorCode.METHOD_NOT_ALLOWED.getMessage())
-                .build();
+        return ResponseUtil.failure(
+                HttpStatus.METHOD_NOT_ALLOWED,
+                CommonErrorCode.METHOD_NOT_ALLOWED
+        );
+    }
 
-        return ResponseEntity
-                .status(HttpStatus.METHOD_NOT_ALLOWED)
-                .body(ApiResponse.failure(error));
+    /**
+     * 지원하지 않는 Content-Type (415)
+     */
+    @ExceptionHandler(org.springframework.web.HttpMediaTypeNotSupportedException.class)
+    public ResponseEntity<ApiResponse<Void>> handleHttpMediaTypeNotSupportedException(
+            org.springframework.web.HttpMediaTypeNotSupportedException e,
+            HttpServletRequest request
+    ) {
+        log.warn("""
+            [HttpMediaTypeNotSupportedException]
+            Path   : {}
+            Method : {}
+            Message: {}
+            """,
+                request.getRequestURI(),
+                request.getMethod(),
+                e.getMessage()
+        );
+
+        return ResponseUtil.failure(
+                HttpStatus.UNSUPPORTED_MEDIA_TYPE,
+                CommonErrorCode.UNSUPPORTED_MEDIA_TYPE
+        );
+    }
+
+    /**
+     * 파라미터 타입 변환 실패 (400)
+     */
+    @ExceptionHandler(org.springframework.web.method.annotation.MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiResponse<Void>> handleMethodArgumentTypeMismatchException(
+            org.springframework.web.method.annotation.MethodArgumentTypeMismatchException e,
+            HttpServletRequest request
+    ) {
+        log.warn("""
+            [MethodArgumentTypeMismatchException]
+            Path   : {}
+            Method : {}
+            Parameter: {}
+            Message: {}
+            """,
+                request.getRequestURI(),
+                request.getMethod(),
+                e.getName(),
+                e.getMessage()
+        );
+
+        return ResponseUtil.failure(
+                HttpStatus.BAD_REQUEST,
+                CommonErrorCode.INVALID_INPUT,
+                "잘못된 파라미터 형식입니다: " + e.getName()
+        );
     }
 
 
@@ -197,7 +238,7 @@ public class GlobalExceptionHandler {
      * 시스템 예외 (예상치 못한 에러)
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<?>> handleException(Exception e, HttpServletRequest request) {
+    public ResponseEntity<ApiResponse<Void>> handleException(Exception e, HttpServletRequest request) {
         log.error("""
                 [SystemException]
                 Path   : {}
@@ -210,14 +251,10 @@ public class GlobalExceptionHandler {
                 e
         );
 
-        ApiError error = ApiError.builder()
-                .code(CommonErrorCode.INTERNAL_ERROR.getCode())
-                .message(CommonErrorCode.INTERNAL_ERROR.getMessage())
-                .build();
-
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ApiResponse.failure(error));
+        return ResponseUtil.failure(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                CommonErrorCode.INTERNAL_ERROR
+        );
     }
 
 
