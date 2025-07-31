@@ -2,7 +2,7 @@ package com.bongjangboo.member.presentation.dto.response;
 
 import com.bongjangboo.member.domain.Member;
 import com.bongjangboo.member.domain.MemberStatus;
-import com.bongjangboo.member.domain.SocialProvider;
+import com.bongjangboo.shared.identity.SocialProvider;
 import lombok.Builder;
 import lombok.Getter;
 

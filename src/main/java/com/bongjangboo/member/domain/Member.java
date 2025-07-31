@@ -4,6 +4,7 @@ import com.bongjangboo.member.domain.vo.Email;
 import com.bongjangboo.member.domain.vo.PhoneNumber;
 import com.bongjangboo.member.exception.MemberErrorCode;
 import com.bongjangboo.shared.exception.BusinessException;
+import com.bongjangboo.shared.identity.SocialProvider;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -72,7 +73,6 @@ public class Member {
 
     /**
      * 회원가입용 도메인 팩토리 메서드
-     * 팩토리 메서드에서 또다른 생성패턴인 빌더를 쓰는게 이상함
      */
     public static Member createNewMember(
             String name,

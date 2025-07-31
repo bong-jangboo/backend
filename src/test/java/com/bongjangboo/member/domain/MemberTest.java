@@ -4,6 +4,7 @@ import com.bongjangboo.member.domain.vo.Email;
 import com.bongjangboo.member.domain.vo.PhoneNumber;
 import com.bongjangboo.member.exception.MemberErrorCode;
 import com.bongjangboo.shared.exception.BusinessException;
+import com.bongjangboo.shared.identity.SocialProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

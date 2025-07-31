@@ -2,7 +2,7 @@ package com.bongjangboo.member.infra.persistence;
 
 import com.bongjangboo.member.domain.Member;
 import com.bongjangboo.member.domain.MemberStatus;
-import com.bongjangboo.member.domain.SocialProvider;
+import com.bongjangboo.shared.identity.SocialProvider;
 import com.bongjangboo.member.domain.vo.Email;
 import com.bongjangboo.member.domain.vo.PhoneNumber;
 import jakarta.persistence.*;

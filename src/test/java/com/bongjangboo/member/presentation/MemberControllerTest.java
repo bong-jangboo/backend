@@ -1,9 +1,10 @@
 package com.bongjangboo.member.presentation;
 
+import com.bongjangboo.auth.application.JwtTokenProvider;
 import com.bongjangboo.member.application.service.MemberApplicationService;
 import com.bongjangboo.member.domain.Member;
 import com.bongjangboo.member.domain.MemberStatus;
-import com.bongjangboo.member.domain.SocialProvider;
+import com.bongjangboo.shared.identity.SocialProvider;
 import com.bongjangboo.member.domain.vo.Email;
 import com.bongjangboo.member.domain.vo.PhoneNumber;
 import com.bongjangboo.member.exception.MemberErrorCode;
@@ -52,6 +53,9 @@ class MemberControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @MockBean
+    private JwtTokenProvider jwtTokenProvider;
 
     private Member createTestMember() {
         return Member.builder()

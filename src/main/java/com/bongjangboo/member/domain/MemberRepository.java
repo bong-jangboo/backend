@@ -1,5 +1,7 @@
 package com.bongjangboo.member.domain;
 
+import com.bongjangboo.shared.identity.SocialProvider;
+
 import com.bongjangboo.member.domain.vo.Email;
 import com.bongjangboo.member.domain.vo.PhoneNumber;
 
