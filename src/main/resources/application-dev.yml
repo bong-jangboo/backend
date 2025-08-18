@@ -1,8 +1,1 @@
-# dev 전용 오버라이드 (e.g., 추가 속성)
-logging:
-  level:
-    org.hibernate.orm.jdbc.bind: trace
-
-output:
-  ansi:
-    enabled: always
+# dev 전용 오버라이드

@@ -42,6 +42,17 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-api:2.2.0'
 
 
+    // OAuth & HTTP Client
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux' // WebClient용
+    
+    // JSON 처리 (카카오 API 응답 파싱용)
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'com.fasterxml.jackson.core:jackson-core'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations'
+
+
 
 
     // Lombok
