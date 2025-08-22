@@ -1,6 +1,6 @@
 package com.bongjangboo.member.infra.persistence;
 
-import com.bongjangboo.auth.domain.oauth.SocialProvider;
+import com.bongjangboo.member.domain.SocialProvider;
 import com.bongjangboo.member.domain.vo.Email;
 import com.bongjangboo.member.domain.vo.PhoneNumber;
 import org.springframework.data.jpa.repository.JpaRepository;

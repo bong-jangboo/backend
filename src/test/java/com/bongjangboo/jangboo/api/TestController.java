@@ -1,6 +1,6 @@
 package com.bongjangboo.jangboo.api;
 
-import com.bongjangboo.auth.domain.oauth.SocialProvider;
+import com.bongjangboo.member.domain.SocialProvider;
 import com.bongjangboo.member.exception.MemberErrorCode;
 import com.bongjangboo.shared.exception.BusinessException;
 import com.bongjangboo.shared.response.ApiResponse;

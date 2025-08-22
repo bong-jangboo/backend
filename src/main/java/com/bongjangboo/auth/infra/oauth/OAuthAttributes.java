@@ -2,7 +2,7 @@ package com.bongjangboo.auth.infra.oauth;
 
 import com.bongjangboo.auth.domain.oauth.OAuth2UserInfo;
 import com.bongjangboo.auth.domain.oauth.provider.NaverUserInfo;
-import com.bongjangboo.auth.domain.oauth.SocialProvider;
+import com.bongjangboo.member.domain.SocialProvider;
 import com.bongjangboo.shared.exception.BusinessException;
 import com.bongjangboo.shared.exception.CommonErrorCode;
 import lombok.Builder;

@@ -1,6 +1,5 @@
 package com.bongjangboo.member.domain;
 
-import com.bongjangboo.auth.domain.oauth.SocialProvider;
 import com.bongjangboo.member.domain.vo.Email;
 import com.bongjangboo.member.domain.vo.PhoneNumber;
 import com.bongjangboo.member.exception.MemberErrorCode;
