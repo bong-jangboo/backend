@@ -1,7 +1,7 @@
 package com.bongjangboo.member.presentation.dto.request;
 
 import com.bongjangboo.member.application.command.RegisterMemberCommand;
-import com.bongjangboo.member.domain.SocialProvider;
+import com.bongjangboo.auth.domain.oauth.SocialProvider;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

@@ -1,4 +1,4 @@
-package com.bongjangboo.member.domain;
+package com.bongjangboo.auth.domain.oauth;
 
 public enum SocialProvider {
     KAKAO,

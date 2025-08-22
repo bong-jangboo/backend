@@ -1,6 +1,6 @@
 package com.bongjangboo.member.application.command;
 
-import com.bongjangboo.member.domain.SocialProvider;
+import com.bongjangboo.auth.domain.oauth.SocialProvider;
 import lombok.Builder;
 import lombok.Value;
 

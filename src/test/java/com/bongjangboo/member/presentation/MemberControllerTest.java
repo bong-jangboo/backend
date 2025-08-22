@@ -3,7 +3,7 @@ package com.bongjangboo.member.presentation;
 import com.bongjangboo.member.application.service.MemberApplicationService;
 import com.bongjangboo.member.domain.Member;
 import com.bongjangboo.member.domain.MemberStatus;
-import com.bongjangboo.member.domain.SocialProvider;
+import com.bongjangboo.auth.domain.oauth.SocialProvider;
 import com.bongjangboo.member.domain.vo.Email;
 import com.bongjangboo.member.domain.vo.PhoneNumber;
 import com.bongjangboo.member.exception.MemberErrorCode;

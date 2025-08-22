@@ -3,7 +3,7 @@ package com.bongjangboo.jangboo.member;
 import com.bongjangboo.member.domain.Member;
 import com.bongjangboo.member.domain.MemberRepository;
 import com.bongjangboo.member.domain.MemberStatus;
-import com.bongjangboo.member.domain.SocialProvider;
+import com.bongjangboo.auth.domain.oauth.SocialProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
