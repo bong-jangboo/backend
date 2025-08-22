@@ -5,12 +5,15 @@ import com.bongjangboo.member.domain.Member;
 import com.bongjangboo.member.domain.MemberRepository;
 import com.bongjangboo.auth.domain.oauth.SocialProvider;
 import com.bongjangboo.member.domain.event.MemberRegisteredEvent;
+import com.bongjangboo.member.domain.vo.Email;
 import com.bongjangboo.member.exception.MemberErrorCode;
 import com.bongjangboo.shared.event.DomainEventPublisher;
 import com.bongjangboo.shared.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -50,6 +53,34 @@ public class MemberApplicationService {
 
         return saved;
     }
+
+
+    /**
+     * SocialLogin 처리 로직
+     * @param command
+     * @return
+     */
+    @Transactional
+    public Member findOrCreateFromSocialLogin(RegisterMemberFromSocialCommand command) {
+
+        SocialProvider socialProvider = command.getSocialProvider();
+        String socialId = command.getSocialId();
+
+        Optional<Member> existingMember = memberRepository.findBySocial(socialProvider, socialId);
+        if(existingMember.isPresent()) {
+            return existingMember.get();
+        } else {
+
+            Member member = Member.createNewMember(
+                    command.getName(),
+                    new Email(command.getEmail()),
+                    socialProvider,
+                    socialId);
+
+            return memberRepository.save(member);
+        }
+    }
+
 
     /**
      * 프로필 수정 (닉네임, 이메일, 전화번호)

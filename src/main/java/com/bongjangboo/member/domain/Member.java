@@ -1,6 +1,7 @@
 package com.bongjangboo.member.domain;
 
 import com.bongjangboo.auth.domain.oauth.SocialProvider;
+import com.bongjangboo.member.domain.util.NicknameGenerator;
 import com.bongjangboo.member.domain.vo.Email;
 import com.bongjangboo.member.domain.vo.PhoneNumber;
 import com.bongjangboo.member.exception.MemberErrorCode;
@@ -95,6 +96,26 @@ public class Member {
                 .build();
     }
 
+    public static Member createNewMember(
+            String name,
+            Email email,
+            SocialProvider socialProvider,
+            String socialId
+    ) {
+        return Member.builder()
+                .id(null) // 생성 시에는 null
+                .email(email) // 생성 시에는 null
+                .phoneNumber(null) // 생성 시에는 null
+                .name(name)
+                .nickname(generateRandomNickname()) // 닉네임 자동 생성
+                .status(MemberStatus.PENDING_ONBOARDING) // 최초 생성시
+                .socialProvider(socialProvider)
+                .socialId(socialId)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
+    }
+
 
 
     /**
@@ -122,6 +143,13 @@ public class Member {
         }
         this.email = email;
         this.updatedAt = LocalDateTime.now();
+    }
+
+    /**
+     * random nickname 생성
+     */
+    private static String generateRandomNickname() {
+        return NicknameGenerator.generateNickname();
     }
 
 

@@ -35,5 +35,8 @@ public enum MemberStatus {
      * - 의미: 정책 위반, 어뷰징 등으로 관리자가 계정 정지
      * - 비즈니스 규칙: 관리자 승인 전까지 서비스 이용 불가
      */
-    INACTIVE
+    INACTIVE,
+
+    SLEEP,
+    DEACTIVATED
 }
